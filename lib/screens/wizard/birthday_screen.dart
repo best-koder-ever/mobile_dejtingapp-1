@@ -221,9 +221,9 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
                         child: ElevatedButton(
                           onPressed: _isValid ? _next : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: _isValid
-                                ? const Color(0xFFFF6B6B)
-                                : Colors.grey,
+                            backgroundColor: const Color(0xFFFF6B6B),
+                            disabledBackgroundColor: Colors.grey[300],
+                            disabledForegroundColor: Colors.white70,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(27)),
                           ),

@@ -216,9 +216,9 @@ class _GenderScreenState extends State<GenderScreen> {
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _selected != null
-                            ? const Color(0xFFFF6B6B)
-                            : Colors.grey,
+                        backgroundColor: const Color(0xFFFF6B6B),
+                        disabledBackgroundColor: Colors.grey[300],
+                        disabledForegroundColor: Colors.white70,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(27),
                         ),

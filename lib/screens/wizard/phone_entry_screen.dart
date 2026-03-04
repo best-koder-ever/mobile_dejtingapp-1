@@ -12,6 +12,10 @@ import '../../providers/onboarding_provider.dart';
 /// User picks their SIM number from system dialog — no manual typing.
 /// Fallback: manual entry with country selector.
 ///
+/// Supports two modes:
+/// 1. Onboarding mode (wrapped in OnboardingProvider) — shows progress bar + abort button
+/// 2. Sign-in mode (no OnboardingProvider) — shows "Welcome back" title, no progress bar
+///
 /// In DevMode: pre-fills test phone number so you just tap Continue.
 class PhoneEntryScreen extends StatefulWidget {
   const PhoneEntryScreen({super.key});
@@ -31,6 +35,17 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
   bool _isSending = false;
   String? _errorMessage;
   bool _hintShown = false;
+  bool _navigatedToVerifyCode = false;
+
+  /// Whether we're inside the onboarding wizard (has OnboardingProvider ancestor)
+  bool get _isOnboardingMode => OnboardingProvider.maybeOf(context) != null;
+
+  /// Route prefix for navigation — '/onboarding' or '/signin'
+  String get _routePrefix {
+    final route = ModalRoute.of(context)?.settings.name ?? '';
+    if (route.startsWith('/signin')) return '/signin';
+    return '/onboarding';
+  }
 
   @override
   void initState() {
@@ -87,15 +102,13 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
   }
 
   /// Parse a full international phone number and fill the UI fields.
-  /// e.g. "+46701234567" → country code "+46", number "701234567"
   void _parseAndFillPhone(String fullPhone) {
-    // Common country codes sorted by length (longest first to avoid partial matches)
     final countryCodes = {
-      '+46': '🇸🇪', // Sweden
-      '+44': '🇬🇧', // UK
-      '+49': '🇩🇪', // Germany
-      '+33': '🇫🇷', // France
-      '+1': '🇺🇸', // US/Canada
+      '+46': '🇸🇪',
+      '+44': '🇬🇧',
+      '+49': '🇩🇪',
+      '+33': '🇫🇷',
+      '+1': '🇺🇸',
     };
 
     String detectedCode = '+46';
@@ -121,9 +134,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
   void _validatePhone() {
     final phone = _phoneController.text.replaceAll(RegExp(r'[^\d+]'), '');
     setState(() {
-      // Allow either local number (9-15 digits) or full international (+XX...)
       if (phone.startsWith('+')) {
-        // User typed full international number — must be 10+ chars (e.g. +46700000001)
         final digitsOnly = phone.replaceAll(RegExp(r'[^\d]'), '');
         _isValidPhone = digitsOnly.length >= 10 && digitsOnly.length <= 15;
       } else {
@@ -143,7 +154,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(AppLocalizations.of(context).selectCountry,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
             const SizedBox(height: 16),
             _buildCountryOption('🇸🇪', 'Sweden', '+46'),
             _buildCountryOption('🇺🇸', 'United States', '+1'),
@@ -174,29 +185,21 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
     );
   }
 
-  /// Build the full E.164 phone number, avoiding double country codes.
-  /// Handles: "700000001" → "+46700000001"
-  ///          "+46700000001" → "+46700000001" (no double prefix)
-  ///          "46700000001" → "+46700000001" (detects raw country code without +)
   String _buildFullPhoneNumber() {
     final raw = _phoneController.text.replaceAll(RegExp(r'[\s\-()]'), '');
 
-    // Case 1: User typed full international number with +
     if (raw.startsWith('+')) {
       return raw;
     }
 
-    // Case 2: User typed country code without + (e.g. "46700000001")
-    final codeDigits = _selectedCountryCode.substring(1); // "46"
+    final codeDigits = _selectedCountryCode.substring(1);
     if (raw.startsWith(codeDigits) && raw.length > codeDigits.length + 6) {
       return '+$raw';
     }
 
-    // Case 3: Local number only (e.g. "700000001")
     return '$_selectedCountryCode$raw';
   }
 
-  /// Whether Firebase is available (only on Android/iOS).
   bool get _isFirebaseAvailable =>
       defaultTargetPlatform == TargetPlatform.android ||
       defaultTargetPlatform == TargetPlatform.iOS;
@@ -207,14 +210,13 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
     final fullPhone = _buildFullPhoneNumber();
     debugPrint('📱 Sending verification to: $fullPhone');
 
-    // Desktop (Linux/Windows/macOS): Firebase not available.
-    // In DevMode, skip straight to SMS code screen with fake verificationId.
+    // Desktop DevMode: skip Firebase
     if (!_isFirebaseAvailable) {
       if (DevMode.enabled) {
         debugPrint('🔧 DevMode on desktop: skipping Firebase, navigating to verify-code');
         Navigator.pushNamed(
           context,
-          '/onboarding/verify-code',
+          '${_routePrefix}/verify-code',
           arguments: {
             'verificationId': 'dev-mode-desktop-fake-id',
             'phoneNumber': fullPhone,
@@ -229,7 +231,6 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
       }
     }
 
-
     setState(() {
       _isSending = true;
       _errorMessage = null;
@@ -239,11 +240,12 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
       await FirebasePhoneAuthService.verifyPhoneNumber(
         phoneNumber: fullPhone,
         onCodeSent: (verificationId) {
-          if (!mounted) return;
+          if (!mounted || _navigatedToVerifyCode) return;
+          _navigatedToVerifyCode = true;
           setState(() => _isSending = false);
           Navigator.pushNamed(
             context,
-            '/onboarding/verify-code',
+            '${_routePrefix}/verify-code',
             arguments: {
               'verificationId': verificationId,
               'phoneNumber': fullPhone,
@@ -251,16 +253,17 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
           );
         },
         onVerificationCompleted: (credential) async {
-          if (!mounted) return;
+          if (!mounted || _navigatedToVerifyCode) return;
           final idToken =
               await FirebasePhoneAuthService.signInWithAutoCredential(
                   credential);
-          if (!mounted) return;
+          if (!mounted || _navigatedToVerifyCode) return;
+          _navigatedToVerifyCode = true;
           setState(() => _isSending = false);
           if (idToken != null) {
             Navigator.pushNamed(
               context,
-              '/onboarding/verify-code',
+              '${_routePrefix}/verify-code',
               arguments: {
                 'autoVerified': true,
                 'firebaseIdToken': idToken,
@@ -293,6 +296,10 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final onboarding = OnboardingProvider.maybeOf(context);
+    final isSignIn = onboarding == null;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -303,11 +310,11 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
-            onPressed: () =>
-                OnboardingProvider.of(context).abort(context),
-          ),
+          if (!isSignIn)
+            IconButton(
+              icon: const Icon(Icons.close, color: Colors.black),
+              onPressed: () => onboarding.abort(context),
+            ),
         ],
       ),
       body: Stack(
@@ -318,34 +325,37 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Progress
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: LinearProgressIndicator(
-                      value: OnboardingProvider.of(context).progress(context),
-                      backgroundColor: Colors.grey[200],
-                      valueColor: const AlwaysStoppedAnimation(coralColor),
-                      minHeight: 4,
+                  // Progress bar — only in onboarding mode
+                  if (!isSignIn) ...[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: onboarding.progress(context),
+                        backgroundColor: Colors.grey[200],
+                        valueColor: const AlwaysStoppedAnimation(coralColor),
+                        minHeight: 4,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 32),
+                    const SizedBox(height: 32),
+                  ],
 
+                  // Title — different for sign-in vs onboarding
                   Text(
-                    AppLocalizations.of(context).onboardingPhoneTitle,
-                    style: TextStyle(
+                    isSignIn ? l10n.welcomeBack : l10n.onboardingPhoneTitle,
+                    style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
-                    AppLocalizations.of(context).phoneVerificationExplainer,
+                    isSignIn ? l10n.signInWithPhoneDescription : l10n.phoneVerificationExplainer,
                     style: TextStyle(
                         fontSize: 16, color: Colors.black54, height: 1.5),
                   ),
                   const SizedBox(height: 32),
 
-                  // DevMode banner showing pre-filled test number
+                  // DevMode banner
                   if (DevMode.enabled)
                     Container(
                       margin: const EdgeInsets.only(bottom: 12),
@@ -412,8 +422,8 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                                 fontSize: 18, fontWeight: FontWeight.w500),
                             decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: AppLocalizations.of(context).phoneNumberHint,
-                              hintStyle: TextStyle(
+                              hintText: l10n.phoneNumberHint,
+                              hintStyle: const TextStyle(
                                   color: Colors.grey,
                                   fontWeight: FontWeight.normal),
                             ),
@@ -439,7 +449,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
 
                   const SizedBox(height: 16),
 
-                  // Tap to re-show phone hint (Android only, non-dev)
+                  // SIM hint (Android only, non-dev)
                   if (defaultTargetPlatform == TargetPlatform.android && !DevMode.enabled)
                     Center(
                       child: TextButton.icon(
@@ -450,8 +460,8 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                         icon: const Icon(Icons.sim_card,
                             size: 18, color: coralColor),
                         label: Text(
-                          AppLocalizations.of(context).useDifferentSim,
-                          style: TextStyle(color: coralColor, fontSize: 14),
+                          l10n.useDifferentSim,
+                          style: const TextStyle(color: coralColor, fontSize: 14),
                         ),
                       ),
                     ),
@@ -468,7 +478,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            AppLocalizations.of(context).continueInfoBox,
+                            l10n.continueInfoBox,
                             style: TextStyle(
                                 fontSize: 13,
                                 color: Colors.grey[700],
@@ -504,8 +514,8 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                               child: CircularProgressIndicator(
                                   color: Colors.white, strokeWidth: 2.5),
                             )
-                          : Text(AppLocalizations.of(context).continueButton,
-                              style: TextStyle(
+                          : Text(l10n.continueButton,
+                              style: const TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold)),
                     ),
                   ),

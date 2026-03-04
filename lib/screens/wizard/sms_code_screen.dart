@@ -3,14 +3,21 @@ import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import '../../config/dev_mode.dart';
+import '../../config/environment.dart';
 import '../../services/firebase_phone_auth_service.dart';
 import '../../services/auth_session_manager.dart';
+import '../../services/api_service.dart';
 import '../../providers/onboarding_provider.dart';
 
 /// SMS Verification Code Entry Screen
 /// 6-digit code input with auto-advance, resend timer, and retry limits.
 /// Verifies via Firebase → exchanges for Keycloak JWT → starts session.
+///
+/// Supports two modes:
+/// 1. Onboarding mode (wrapped in OnboardingProvider) — advances to next wizard step
+/// 2. Sign-in mode (no OnboardingProvider) — checks for existing profile → /home or error
 ///
 /// In DevMode: auto-fills the test code (123456) and skips Keycloak if unavailable.
 class SmsCodeScreen extends StatefulWidget {
@@ -43,6 +50,7 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
   String? _phoneNumber;
   bool _autoVerified = false;
   String? _firebaseIdToken;
+  bool _hasNavigated = false;
 
   @override
   void initState() {
@@ -59,16 +67,15 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
     });
   }
 
-  /// Auto-fill the test SMS code in DevMode so user doesn't have to type it
+  /// Auto-fill the test SMS code in DevMode
   void _autoFillTestCode() {
     final testCode = DevMode.fakeSmsCode; // "123456"
     for (int i = 0; i < _codeLength && i < testCode.length; i++) {
       _controllers[i].text = testCode[i];
     }
-    setState(() {}); // refresh UI to show filled digits
-    // Small delay then verify (gives user a moment to see what's happening)
+    setState(() {});
     Future.delayed(const Duration(milliseconds: 800), () {
-      if (mounted) {
+      if (mounted && !_autoVerified && !_hasNavigated) {
         final code = _controllers.map((c) => c.text).join();
         if (code.length == _codeLength) {
           _verifyCode(code);
@@ -146,6 +153,9 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
     }
   }
 
+  /// Whether we're in sign-in mode (no OnboardingProvider ancestor)
+  bool get _isSignInMode => OnboardingProvider.maybeOf(context) == null;
+
   Future<void> _verifyCode(String code) async {
     if (_verificationId == null) {
       setState(() => _errorMessage = AppLocalizations.of(context).verificationSessionExpired);
@@ -157,19 +167,18 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
       _errorMessage = null;
     });
 
-    // Desktop DevMode: Firebase not available — skip verification, go forward
+    // Desktop DevMode: Firebase not available — skip verification
     if (DevMode.enabled &&
         defaultTargetPlatform != TargetPlatform.android &&
         defaultTargetPlatform != TargetPlatform.iOS) {
       debugPrint('🔧 DevMode on desktop: skipping Firebase SMS verify');
       if (mounted) {
-        OnboardingProvider.of(context).goNext(context);
+        _handlePostAuth();
       }
       return;
     }
 
     try {
-      // Verify OTP with Firebase
       final firebaseIdToken = await FirebasePhoneAuthService.verifySmsCode(
         verificationId: _verificationId!,
         smsCode: code,
@@ -186,7 +195,6 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
         return;
       }
 
-      // Firebase verified — now exchange for Keycloak JWT
       await _completeLogin(firebaseIdToken);
     } catch (e) {
       if (mounted) {
@@ -200,7 +208,6 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
   }
 
   /// Exchange Firebase token → Keycloak JWT → start app session.
-  /// In DevMode: if Keycloak is unavailable, skip forward anyway.
   Future<void> _completeLogin(String firebaseIdToken) async {
     setState(() => _isVerifying = true);
 
@@ -210,10 +217,8 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
       if (!mounted) return;
 
       if (result.success) {
-        // Phone verified + Keycloak session active → continue onboarding
-        OnboardingProvider.of(context).goNext(context);
+        _handlePostAuth();
       } else if (DevMode.enabled) {
-        // DevMode: Keycloak exchange failed (probably not running) — skip forward
         debugPrint('🔧 DevMode: Keycloak exchange failed, skipping forward. Error: ${result.message}');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -223,7 +228,7 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
               duration: Duration(seconds: 3),
             ),
           );
-          OnboardingProvider.of(context).goNext(context);
+          _handlePostAuth();
         }
       } else {
         setState(() {
@@ -235,9 +240,8 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
     } catch (e) {
       if (!mounted) return;
       if (DevMode.enabled) {
-        // DevMode: any exception during login → skip forward
         debugPrint('🔧 DevMode: Login exception, skipping forward. Error: $e');
-        OnboardingProvider.of(context).goNext(context);
+        _handlePostAuth();
       } else {
         setState(() {
           _isVerifying = false;
@@ -246,6 +250,56 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
         _clearCode();
       }
     }
+  }
+
+  /// Route after successful auth — depends on mode:
+  /// - Onboarding mode → advance to next wizard step
+  /// - Sign-in mode → check for existing profile → /home or show error
+  Future<void> _handlePostAuth() async {
+    if (!mounted || _hasNavigated) return;
+    _hasNavigated = true;
+
+    final onboarding = OnboardingProvider.maybeOf(context);
+
+    if (onboarding != null) {
+      // Onboarding mode — continue wizard
+      onboarding.goNext(context);
+      return;
+    }
+
+    // Sign-in mode — check if user has an existing profile
+    final appState = AppState();
+    final token = appState.authToken;
+    final userId = appState.userId;
+
+    if (token != null && userId != null) {
+      try {
+        final resp = await http.get(
+          Uri.parse('${EnvironmentConfig.settings.gatewayUrl}/api/users/$userId'),
+          headers: {'Authorization': 'Bearer $token'},
+        );
+
+        if (!mounted) return;
+
+        if (resp.statusCode == 200) {
+          // Existing user with profile → go to home
+          await appState.setOnboardingComplete();
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+          return;
+        }
+      } catch (e) {
+        debugPrint('⚠️ Profile check failed: $e');
+      }
+    }
+
+    if (!mounted) return;
+
+    // No profile found — this number isn't registered yet
+    setState(() {
+      _isVerifying = false;
+      _errorMessage = AppLocalizations.of(context).accountNotFound;
+    });
+    _clearCode();
   }
 
   void _clearCode() {
@@ -265,7 +319,6 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
 
     _clearCode();
 
-    // Re-send SMS via Firebase
     FirebasePhoneAuthService.verifyPhoneNumber(
       phoneNumber: _phoneNumber!,
       onCodeSent: (newVerificationId) {
@@ -299,6 +352,9 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final onboarding = OnboardingProvider.maybeOf(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -317,25 +373,29 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: LinearProgressIndicator(
-                      value: OnboardingProvider.of(context).progress(context),
-                      backgroundColor: Colors.grey[200],
-                      valueColor: const AlwaysStoppedAnimation(_coral),
-                      minHeight: 4,
+                  // Progress bar — only in onboarding mode
+                  if (onboarding != null) ...[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: onboarding.progress(context),
+                        backgroundColor: Colors.grey[200],
+                        valueColor: const AlwaysStoppedAnimation(_coral),
+                        minHeight: 4,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 32),
+                    const SizedBox(height: 32),
+                  ],
+
                   Text(
-                    AppLocalizations.of(context).enterVerificationCode,
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black),
+                    l10n.enterVerificationCode,
+                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     _phoneNumber != null
-                        ? AppLocalizations.of(context).codeSentToPhone(_phoneNumber!)
-                        : AppLocalizations.of(context).codeSentToPhoneFallback,
+                        ? l10n.codeSentToPhone(_phoneNumber!)
+                        : l10n.codeSentToPhoneFallback,
                     style: TextStyle(fontSize: 16, color: Colors.grey[600], height: 1.4),
                   ),
                   const SizedBox(height: 16),
@@ -416,16 +476,16 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
                     Text(_errorMessage!, style: const TextStyle(color: Colors.red, fontSize: 14)),
                   ],
 
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
 
                   // Verifying spinner
                   if (_isVerifying)
                     Center(
                       child: Column(
                         children: [
-                          CircularProgressIndicator(color: _coral),
-                          SizedBox(height: 12),
-                          Text(AppLocalizations.of(context).verifying, style: const TextStyle(color: Colors.black)),
+                          const CircularProgressIndicator(color: _coral),
+                          const SizedBox(height: 12),
+                          Text(l10n.verifying, style: const TextStyle(color: Colors.black)),
                         ],
                       ),
                     ),
@@ -437,20 +497,39 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
                           ? TextButton(
                               onPressed: _resendCode,
                               child: Text(
-                                AppLocalizations.of(context).resendCode,
-                                style: TextStyle(color: _coral, fontSize: 15, fontWeight: FontWeight.w600),
+                                l10n.resendCode,
+                                style: const TextStyle(color: _coral, fontSize: 15, fontWeight: FontWeight.w600),
                               ),
                             )
                           : Text(
                               _resendCount >= _maxResends
-                                  ? AppLocalizations.of(context).maxResendReached
-                                  : AppLocalizations.of(context).resendCodeIn(_secondsRemaining),
+                                  ? l10n.maxResendReached
+                                  : l10n.resendCodeIn(_secondsRemaining),
                               style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                             ),
                     ),
                   ],
 
                   const Spacer(),
+
+                  // "Go back" button for sign-in mode when account not found
+                  if (_isSignInMode && _errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: _coral,
+                            side: const BorderSide(color: _coral),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                          ),
+                          child: Text(l10n.goBackButton, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                        ),
+                      ),
+                    ),
 
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -461,7 +540,7 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            AppLocalizations.of(context).smsRatesInfo,
+                            l10n.smsRatesInfo,
                             style: TextStyle(fontSize: 12, color: Colors.grey[600], height: 1.3),
                           ),
                         ),

@@ -2,26 +2,22 @@ import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/dev_mode_banner.dart';
+import '../theme/app_theme.dart';
 
-/// Welcome/Login Screen - Based on Stitch variant-02-multiauth design
-/// Tinder-style dark modal with Apple/Google/Phone auth options
+/// Welcome Screen — Two clear paths:
+/// 1. "I'm ready to match" → registration/onboarding flow
+/// 2. "Sign in" → returning user phone entry → home
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
-  static const Color coralColor = Color(0xFFFF7F50);
-  static const Color purpleColor = Color(0xFF7f13ec);
-  static const Color googleBlue = Color(0xFF4285F4);
-
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [coralColor, purpleColor],
-          ),
+          gradient: AppTheme.brandGradient,
         ),
         child: SafeArea(
           child: Stack(
@@ -42,16 +38,16 @@ class WelcomeScreen extends StatelessWidget {
                         width: 60,
                         height: 60,
                         decoration: const BoxDecoration(
-                          color: coralColor,
+                          color: AppTheme.primaryColor,
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(Icons.local_fire_department, color: Colors.white, size: 32),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
 
                       Text(
-                        AppLocalizations.of(context).createAccount,
-                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                        l10n.createAccount,
+                        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                       const SizedBox(height: 16),
 
@@ -65,84 +61,53 @@ class WelcomeScreen extends StatelessWidget {
                             WidgetSpan(
                               child: GestureDetector(
                                 onTap: () => _openUrl('https://dejtingapp.com/terms'),
-                                child: Text(AppLocalizations.of(context).termsLink, style: const TextStyle(fontSize: 12, color: coralColor, decoration: TextDecoration.underline)),
+                                child: Text(l10n.termsLink, style: const TextStyle(fontSize: 12, color: AppTheme.primaryColor, decoration: TextDecoration.underline)),
                               ),
                             ),
                             const TextSpan(text: '. Learn how we process your data in our '),
                             WidgetSpan(
                               child: GestureDetector(
                                 onTap: () => _openUrl('https://dejtingapp.com/privacy'),
-                                child: Text(AppLocalizations.of(context).privacyPolicyLink, style: const TextStyle(fontSize: 12, color: coralColor, decoration: TextDecoration.underline)),
+                                child: Text(l10n.privacyPolicyLink, style: const TextStyle(fontSize: 12, color: AppTheme.primaryColor, decoration: TextDecoration.underline)),
                               ),
                             ),
                             const TextSpan(text: '.'),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 32),
 
-                      // Apple Sign-In
+                      // PRIMARY CTA — "I'm ready to match" → registration/onboarding
                       SizedBox(
                         width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton.icon(
-                          onPressed: () => _showComingSoon(context, 'Apple Sign-In'),
-                          icon: const Icon(Icons.apple, size: 24),
-                          label: Text(AppLocalizations.of(context).continueWithApple),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              side: const BorderSide(color: Colors.white30),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      // Google Sign-In
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton.icon(
-                          onPressed: () => _showComingSoon(context, 'Google Sign-In'),
-                          icon: const Icon(Icons.g_mobiledata, size: 24),
-                          label: Text(AppLocalizations.of(context).continueWithGoogle),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: googleBlue,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      // Phone Sign-In → starts onboarding
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton.icon(
+                        height: 54,
+                        child: ElevatedButton(
                           onPressed: () => Navigator.pushNamed(context, '/onboarding/phone-entry'),
-                          icon: const Icon(Icons.phone, size: 20),
-                          label: Text(AppLocalizations.of(context).signInWithPhone),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[900],
+                            backgroundColor: AppTheme.primaryColor,
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              side: const BorderSide(color: Colors.white30),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(27)),
+                            elevation: 2,
+                          ),
+                          child: Text(
+                            l10n.readyToMatch,
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
                       const SizedBox(height: 16),
 
+                      // SECONDARY — "Sign in" → returning user phone entry
                       TextButton(
-                        onPressed: () => _showComingSoon(context, 'Password Recovery'),
+                        onPressed: () => Navigator.pushNamed(context, '/signin/phone-entry'),
                         child: Text(
-                          AppLocalizations.of(context).troubleLoggingIn,
-                          style: TextStyle(color: coralColor, fontSize: 14, decoration: TextDecoration.underline),
+                          l10n.signInButton,
+                          style: const TextStyle(
+                            color: AppTheme.primaryColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -160,12 +125,6 @@ class WelcomeScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  void _showComingSoon(BuildContext context, String feature) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context).featureComingSoon(feature)), backgroundColor: coralColor),
     );
   }
 

@@ -2239,6 +2239,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Listen to your recording and choose to save or re-record'**
   String get voicePromptReview;
+
+  /// Registration CTA button on welcome screen
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m ready to match'**
+  String get readyToMatch;
+
+  /// Sign in button for returning users
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signInButton;
+
+  /// Sign-in phone entry screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get welcomeBack;
+
+  /// Sign-in phone entry screen subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with the phone number you used when you registered.'**
+  String get signInWithPhoneDescription;
+
+  /// Error when sign-in user has no profile
+  ///
+  /// In en, this message translates to:
+  /// **'No account found with this number. Go back and tap \"I\'m ready to match\" to create one.'**
+  String get accountNotFound;
+
+  /// Name visibility hint on first name screen
+  ///
+  /// In en, this message translates to:
+  /// **'Always visible on profile'**
+  String get alwaysVisibleOnProfile;
+
+  /// Bottom sheet explaining profile visibility
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone who views your profile can see this content.'**
+  String get visibilityExplanation;
+
+  /// Age range screen title during onboarding
+  ///
+  /// In en, this message translates to:
+  /// **'How old is your ideal match?'**
+  String get ageRangeTitle;
+
+  /// Suffix for age range label
+  ///
+  /// In en, this message translates to:
+  /// **'years old'**
+  String get yearsOld;
+
+  /// Hint that setting can be changed later
+  ///
+  /// In en, this message translates to:
+  /// **'Editable in Settings'**
+  String get editableInSettings;
+
+  /// Hint that this preference is private
+  ///
+  /// In en, this message translates to:
+  /// **'Not visible on profile'**
+  String get notVisibleOnProfile;
 }
 
 class _AppLocalizationsDelegate

@@ -14,6 +14,7 @@ import 'screens/wizard/gender_screen.dart';
 import 'screens/wizard/orientation_screen.dart';
 import 'screens/wizard/relationship_goals_screen.dart';
 import 'screens/wizard/match_preferences_screen.dart';
+import 'screens/wizard/age_range_screen.dart';
 import 'screens/wizard/photos_screen.dart';
 import 'screens/wizard/sms_code_screen.dart';
 import 'screens/wizard/lifestyle_screen.dart';
@@ -86,6 +87,10 @@ class DatingApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         
         // Welcome / entry point
+        
+        // Sign-in flow (returning users — no OnboardingProvider wrapper)
+        '/signin/phone-entry': (context) => const PhoneEntryScreen(),
+        '/signin/verify-code': (context) => const SmsCodeScreen(),
         '/welcome': (context) => const WelcomeScreen(),
         
         // Onboarding wizard flow
@@ -97,6 +102,7 @@ class DatingApp extends StatelessWidget {
         '/onboarding/orientation': (context) => OnboardingProvider(data: _onboardingData, child: const OrientationScreen()),
         '/onboarding/relationship-goals': (context) => OnboardingProvider(data: _onboardingData, child: const RelationshipGoalsScreen()),
         '/onboarding/match-preferences': (context) => OnboardingProvider(data: _onboardingData, child: const MatchPreferencesScreen()),
+        '/onboarding/age-range': (context) => OnboardingProvider(data: _onboardingData, child: const AgeRangeScreen()),
         '/onboarding/photos': (context) => OnboardingProvider(data: _onboardingData, child: const PhotosScreen()),
         '/onboarding/verify-code': (context) => OnboardingProvider(data: _onboardingData, child: const SmsCodeScreen()),
         '/onboarding/lifestyle': (context) => OnboardingProvider(data: _onboardingData, child: const LifestyleScreen()),

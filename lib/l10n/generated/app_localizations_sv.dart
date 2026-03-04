@@ -1174,4 +1174,40 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get voicePromptReview =>
       'Lyssna på din inspelning och välj att spara eller spela in igen';
+
+  @override
+  String get readyToMatch => 'I\'m ready to match';
+
+  @override
+  String get signInButton => 'Sign in';
+
+  @override
+  String get welcomeBack => 'Welcome back';
+
+  @override
+  String get signInWithPhoneDescription =>
+      'Sign in with the phone number you used when you registered.';
+
+  @override
+  String get accountNotFound =>
+      'No account found with this number. Go back and tap \"I\'m ready to match\" to create one.';
+
+  @override
+  String get alwaysVisibleOnProfile => 'Always visible on profile';
+
+  @override
+  String get visibilityExplanation =>
+      'Everyone who views your profile can see this content.';
+
+  @override
+  String get ageRangeTitle => 'How old is your ideal match?';
+
+  @override
+  String get yearsOld => 'years old';
+
+  @override
+  String get editableInSettings => 'Editable in Settings';
+
+  @override
+  String get notVisibleOnProfile => 'Not visible on profile';
 }

@@ -1511,5 +1511,49 @@
   "voicePromptTitle": "Voice Prompt",
   "voicePromptInstruction": "Record a short voice intro so matches can hear your vibe",
   "voicePromptRecording": "Recording… tap stop when you're done",
-  "voicePromptReview": "Listen to your recording and choose to save or re-record"
+  "voicePromptReview": "Listen to your recording and choose to save or re-record",
+  "readyToMatch": "I'm ready to match",
+  "@readyToMatch": {
+    "description": "Registration CTA button on welcome screen"
+  },
+  "signInButton": "Sign in",
+  "@signInButton": {
+    "description": "Sign in button for returning users"
+  },
+  "welcomeBack": "Welcome back",
+  "@welcomeBack": {
+    "description": "Sign-in phone entry screen title"
+  },
+  "signInWithPhoneDescription": "Sign in with the phone number you used when you registered.",
+  "@signInWithPhoneDescription": {
+    "description": "Sign-in phone entry screen subtitle"
+  },
+  "accountNotFound": "No account found with this number. Go back and tap \"I'm ready to match\" to create one.",
+  "@accountNotFound": {
+    "description": "Error when sign-in user has no profile"
+  },
+  "alwaysVisibleOnProfile": "Always visible on profile",
+  "@alwaysVisibleOnProfile": {
+    "description": "Name visibility hint on first name screen"
+  },
+  "visibilityExplanation": "Everyone who views your profile can see this content.",
+  "@visibilityExplanation": {
+    "description": "Bottom sheet explaining profile visibility"
+  },
+  "ageRangeTitle": "How old is your ideal match?",
+  "@ageRangeTitle": {
+    "description": "Age range screen title during onboarding"
+  },
+  "yearsOld": "years old",
+  "@yearsOld": {
+    "description": "Suffix for age range label"
+  },
+  "editableInSettings": "Editable in Settings",
+  "@editableInSettings": {
+    "description": "Hint that setting can be changed later"
+  },
+  "notVisibleOnProfile": "Not visible on profile",
+  "@notVisibleOnProfile": {
+    "description": "Hint that this preference is private"
+  }
 }

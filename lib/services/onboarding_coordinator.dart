@@ -14,6 +14,7 @@ class OnboardingCoordinator {
     '/onboarding/gender',
     '/onboarding/orientation',
     '/onboarding/match-preferences',
+    '/onboarding/age-range',
     '/onboarding/relationship-goals',
     '/onboarding/lifestyle',
     '/onboarding/interests',

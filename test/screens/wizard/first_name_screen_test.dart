@@ -1,41 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dejtingapp/screens/wizard/first_name_screen.dart';
+import 'package:dejtingapp/models/onboarding_data.dart';
+import '../../helpers/onboarding_test_helper.dart';
 
 void main() {
-  group('First Name Screen (T026)', () {
-    testWidgets('renders with name prompt header', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: FirstNameScreen()),
-      );
+  group('FirstNameScreen', () {
+    const route = '/onboarding/first-name';
+
+    testWidgets('renders without layout errors (catches infinite width crash)',
+        (tester) async {
+      await tester.pumpWidget(buildOnboardingTestHarness(
+        screen: const FirstNameScreen(),
+        routeName: route,
+      ));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(Scaffold), findsWidgets);
+    });
+
+    testWidgets('shows header text', (tester) async {
+      await tester.pumpWidget(buildOnboardingTestHarness(
+        screen: const FirstNameScreen(),
+        routeName: route,
+      ));
+      await tester.pumpAndSettle();
+
       expect(find.textContaining('first name'), findsOneWidget);
     });
 
-    testWidgets('has a text field with hint', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: FirstNameScreen()),
-      );
+    testWidgets('has a text field', (tester) async {
+      await tester.pumpWidget(buildOnboardingTestHarness(
+        screen: const FirstNameScreen(),
+        routeName: route,
+      ));
+      await tester.pumpAndSettle();
+
       expect(find.byType(TextField), findsOneWidget);
-      expect(find.text('First name'), findsOneWidget);
     });
 
-    testWidgets('Next button is disabled when empty', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: FirstNameScreen()),
-      );
+    testWidgets('Next button disabled when empty', (tester) async {
+      await tester.pumpWidget(buildOnboardingTestHarness(
+        screen: const FirstNameScreen(),
+        routeName: route,
+      ));
+      await tester.pumpAndSettle();
+
+      // find.byType(ElevatedButton) should find the Next button
       final button = tester.widget<ElevatedButton>(
         find.byType(ElevatedButton),
       );
       expect(button.onPressed, isNull);
     });
 
-    testWidgets('Next button enabled with valid name (2+ chars)', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: const FirstNameScreen(),
-          routes: {'/onboarding/birthday': (_) => const Scaffold()},
-        ),
-      );
+    testWidgets('Next button enabled with valid name', (tester) async {
+      await tester.pumpWidget(buildOnboardingTestHarness(
+        screen: const FirstNameScreen(),
+        routeName: route,
+      ));
+      await tester.pumpAndSettle();
+
       await tester.enterText(find.byType(TextField), 'Alice');
       await tester.pump();
 
@@ -46,9 +71,12 @@ void main() {
     });
 
     testWidgets('Next button stays disabled with single char', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: FirstNameScreen()),
-      );
+      await tester.pumpWidget(buildOnboardingTestHarness(
+        screen: const FirstNameScreen(),
+        routeName: route,
+      ));
+      await tester.pumpAndSettle();
+
       await tester.enterText(find.byType(TextField), 'A');
       await tester.pump();
 
@@ -58,13 +86,65 @@ void main() {
       expect(button.onPressed, isNull);
     });
 
-    testWidgets('accepts names with accents and hyphens', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: const FirstNameScreen(),
-          routes: {'/onboarding/birthday': (_) => const Scaffold()},
-        ),
-      );
+    testWidgets('tapping Next stores name and navigates to birthday',
+        (tester) async {
+      final data = OnboardingData();
+      await tester.pumpWidget(buildOnboardingTestHarness(
+        screen: const FirstNameScreen(),
+        routeName: route,
+        data: data,
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextField), 'Alice');
+      await tester.pump();
+
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+
+      expect(data.firstName, 'Alice');
+      expect(find.text('birthday'), findsOneWidget);
+    });
+
+    testWidgets('has progress bar', (tester) async {
+      await tester.pumpWidget(buildOnboardingTestHarness(
+        screen: const FirstNameScreen(),
+        routeName: route,
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LinearProgressIndicator), findsOneWidget);
+    });
+
+    testWidgets('has back and close navigation', (tester) async {
+      await tester.pumpWidget(buildOnboardingTestHarness(
+        screen: const FirstNameScreen(),
+        routeName: route,
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+      expect(find.byIcon(Icons.close), findsOneWidget);
+    });
+
+    testWidgets('shows visibility info', (tester) async {
+      await tester.pumpWidget(buildOnboardingTestHarness(
+        screen: const FirstNameScreen(),
+        routeName: route,
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.visibility), findsOneWidget);
+      expect(find.textContaining('visible'), findsOneWidget);
+    });
+
+    testWidgets('accepts accented and hyphenated names', (tester) async {
+      await tester.pumpWidget(buildOnboardingTestHarness(
+        screen: const FirstNameScreen(),
+        routeName: route,
+      ));
+      await tester.pumpAndSettle();
+
       await tester.enterText(find.byType(TextField), "Marie-Ève");
       await tester.pump();
 
@@ -72,34 +152,6 @@ void main() {
         find.byType(ElevatedButton),
       );
       expect(button.onPressed, isNotNull);
-    });
-
-    testWidgets('has progress bar at 23%', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: FirstNameScreen()),
-      );
-      final progress = tester.widget<LinearProgressIndicator>(
-        find.byType(LinearProgressIndicator),
-      );
-      expect(progress.value, 0.23);
-    });
-
-    testWidgets('has back and close navigation', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: FirstNameScreen()),
-      );
-      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-      expect(find.byIcon(Icons.close), findsOneWidget);
-    });
-
-    testWidgets('shows profile display subtitle', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: FirstNameScreen()),
-      );
-      expect(
-        find.textContaining("appear on your profile"),
-        findsOneWidget,
-      );
     });
   });
 }

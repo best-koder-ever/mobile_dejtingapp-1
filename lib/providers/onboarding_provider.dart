@@ -40,8 +40,10 @@ class OnboardingProvider extends InheritedWidget {
   /// which route comes next — just call `onboarding.goNext(context)`.
   void goNext(BuildContext context, {String? currentRoute}) {
     final route = currentRoute ?? ModalRoute.of(context)?.settings.name;
+    debugPrint('🧭 goNext: current=$route');
     if (route == null) return;
     final next = OnboardingCoordinator.getNextRoute(route);
+    debugPrint('🧭 goNext: next=$next');
     if (next != null) {
       Navigator.pushNamed(context, next);
     }
