@@ -141,6 +141,10 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
               style: TextStyle(color: Colors.grey[600], fontSize: 15),
             ),
           ),
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.black),
+            onPressed: () => OnboardingProvider.of(context).abort(context),
+          ),
         ],
       ),
       body: Stack(
@@ -229,7 +233,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 52,
+                    height: 54,
                     child: ElevatedButton(
                       onPressed: _finish,
                       style: ElevatedButton.styleFrom(

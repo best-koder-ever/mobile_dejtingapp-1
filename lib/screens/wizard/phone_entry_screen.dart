@@ -38,7 +38,6 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
   bool _navigatedToVerifyCode = false;
 
   /// Whether we're inside the onboarding wizard (has OnboardingProvider ancestor)
-  bool get _isOnboardingMode => OnboardingProvider.maybeOf(context) != null;
 
   /// Route prefix for navigation — '/onboarding' or '/signin'
   String get _routePrefix {
@@ -493,7 +492,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
 
                   SizedBox(
                     width: double.infinity,
-                    height: 56,
+                    height: 54,
                     child: ElevatedButton(
                       onPressed: (_isValidPhone && !_isSending)
                           ? _handleContinue

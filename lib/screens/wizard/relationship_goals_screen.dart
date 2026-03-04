@@ -120,7 +120,7 @@ class _RelationshipGoalsScreenState extends State<RelationshipGoalsScreen> {
                   const SizedBox(height: 12),
                   SizedBox(
                     width: double.infinity,
-                    height: 52,
+                    height: 54,
                     child: ElevatedButton(
                       onPressed: _isValid ? () { OnboardingProvider.of(context).data.relationshipGoal = _selected; OnboardingProvider.of(context).goNext(context); } : null,
                       style: ElevatedButton.styleFrom(
