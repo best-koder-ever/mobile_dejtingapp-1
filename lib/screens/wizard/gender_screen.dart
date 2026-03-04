@@ -223,8 +223,8 @@ class _GenderScreenState extends State<GenderScreen> {
                           borderRadius: BorderRadius.circular(27),
                         ),
                       ),
-                      child: const Text(
-                        'Next',
+                      child: Text(
+                        AppLocalizations.of(context).nextButton,
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),

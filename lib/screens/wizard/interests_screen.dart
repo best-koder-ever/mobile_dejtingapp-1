@@ -160,7 +160,7 @@ class _InterestsScreenState extends State<InterestsScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${_selected.length} / $_maxInterests selected',
+                          AppLocalizations.of(context).interestsSelectedCount(_selected.length, _maxInterests),
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -175,8 +175,19 @@ class _InterestsScreenState extends State<InterestsScreen> {
                         ..._categories.entries.map((catEntry) {
                           final emoji = catEntry.key;
                           final innerMap = catEntry.value;
-                          final title = innerMap.keys.first;
+                          final titleKey = innerMap.keys.first;
                           final options = innerMap.values.first;
+                          final l10n = AppLocalizations.of(context);
+                          final catNames = <String, String>{
+                            'Outdoors & adventure': l10n.interestCategoryOutdoors,
+                            'Values & causes': l10n.interestCategoryValues,
+                            'Staying in': l10n.interestCategoryStayingIn,
+                            'TV & movies': l10n.interestCategoryTvMovies,
+                            'Music': l10n.interestCategoryMusic,
+                            'Food & drink': l10n.interestCategoryFoodDrink,
+                            'Going out': l10n.interestCategoryGoingOut,
+                          };
+                          final title = catNames[titleKey] ?? titleKey;
 
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 24),

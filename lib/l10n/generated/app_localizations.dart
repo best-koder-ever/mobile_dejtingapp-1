@@ -2305,6 +2305,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not visible on profile'**
   String get notVisibleOnProfile;
+
+  /// Straight orientation description
+  ///
+  /// In en, this message translates to:
+  /// **'Attracted to the opposite gender'**
+  String get orientationStraightDesc;
+
+  /// Gay orientation description
+  ///
+  /// In en, this message translates to:
+  /// **'Attracted to the same gender'**
+  String get orientationGayDesc;
+
+  /// Lesbian orientation description
+  ///
+  /// In en, this message translates to:
+  /// **'Women attracted to women'**
+  String get orientationLesbianDesc;
+
+  /// Bisexual orientation description
+  ///
+  /// In en, this message translates to:
+  /// **'Attracted to more than one gender'**
+  String get orientationBisexualDesc;
+
+  /// Asexual orientation description
+  ///
+  /// In en, this message translates to:
+  /// **'Little or no sexual attraction'**
+  String get orientationAsexualDesc;
+
+  /// Demisexual orientation description
+  ///
+  /// In en, this message translates to:
+  /// **'Attraction after emotional bond'**
+  String get orientationDemisexualDesc;
+
+  /// Pansexual orientation description
+  ///
+  /// In en, this message translates to:
+  /// **'Attraction regardless of gender'**
+  String get orientationPansexualDesc;
+
+  /// Queer orientation description
+  ///
+  /// In en, this message translates to:
+  /// **'Not heterosexual or cisgender'**
+  String get orientationQueerDesc;
+
+  /// Questioning orientation description
+  ///
+  /// In en, this message translates to:
+  /// **'Exploring or unsure'**
+  String get orientationQuestioningDesc;
+
+  /// Smoking section title in lifestyle screen
+  ///
+  /// In en, this message translates to:
+  /// **'How often do you smoke?'**
+  String get lifestyleSmokingTitle;
+
+  /// Exercise section title in lifestyle screen
+  ///
+  /// In en, this message translates to:
+  /// **'Do you exercise?'**
+  String get lifestyleExerciseTitle;
+
+  /// Pets section title in lifestyle screen
+  ///
+  /// In en, this message translates to:
+  /// **'Do you have any pets?'**
+  String get lifestylePetsTitle;
+
+  /// About me section header for communication style
+  ///
+  /// In en, this message translates to:
+  /// **'Communication style'**
+  String get aboutMeCommunicationStyle;
+
+  /// About me section header for love language
+  ///
+  /// In en, this message translates to:
+  /// **'Love language'**
+  String get aboutMeLoveLanguage;
+
+  /// About me section header for education level
+  ///
+  /// In en, this message translates to:
+  /// **'Education level'**
+  String get aboutMeEducationLevel;
+
+  /// Interest category: outdoors
+  ///
+  /// In en, this message translates to:
+  /// **'Outdoors & adventure'**
+  String get interestCategoryOutdoors;
+
+  /// Interest category: values
+  ///
+  /// In en, this message translates to:
+  /// **'Values & causes'**
+  String get interestCategoryValues;
+
+  /// Interest category: staying in
+  ///
+  /// In en, this message translates to:
+  /// **'Staying in'**
+  String get interestCategoryStayingIn;
+
+  /// Interest category: tv & movies
+  ///
+  /// In en, this message translates to:
+  /// **'TV & movies'**
+  String get interestCategoryTvMovies;
+
+  /// Interest category: music
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get interestCategoryMusic;
+
+  /// Interest category: food & drink
+  ///
+  /// In en, this message translates to:
+  /// **'Food & drink'**
+  String get interestCategoryFoodDrink;
+
+  /// Interest category: going out
+  ///
+  /// In en, this message translates to:
+  /// **'Going out'**
+  String get interestCategoryGoingOut;
+
+  /// Interest selection counter
+  ///
+  /// In en, this message translates to:
+  /// **'{count} / {max} selected'**
+  String interestsSelectedCount(int count, int max);
 }
 
 class _AppLocalizationsDelegate

@@ -203,7 +203,7 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
                         // Smoking
                         _buildSection(
                           emoji: '🚬',
-                          title: 'How often do you smoke?',
+                          title: AppLocalizations.of(context).lifestyleSmokingTitle,
                           options: _smokingOptions,
                           selected: _smoking,
                           onSelected: (v) =>
@@ -214,7 +214,7 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
                         // Exercise
                         _buildSection(
                           emoji: '💪',
-                          title: 'Do you exercise?',
+                          title: AppLocalizations.of(context).lifestyleExerciseTitle,
                           options: _exerciseOptions,
                           selected: _exercise,
                           onSelected: (v) => setState(
@@ -225,7 +225,7 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
                         // Pets
                         _buildSection(
                           emoji: '🐾',
-                          title: 'Do you have any pets?',
+                          title: AppLocalizations.of(context).lifestylePetsTitle,
                           options: _petOptions,
                           selected: _pets,
                           onSelected: (v) =>

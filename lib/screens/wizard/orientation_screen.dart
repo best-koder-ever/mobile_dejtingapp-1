@@ -24,16 +24,9 @@ class _OrientationScreenState extends State<OrientationScreen> {
   /// Primary attraction labels — mutually exclusive with each other.
   static const Set<String> _primaryGroup = {'Straight', 'Gay', 'Lesbian'};
 
-  static const List<Map<String, String>> _orientations = [
-    {'label': 'Straight', 'desc': 'Attracted to the opposite gender'},
-    {'label': 'Gay', 'desc': 'Attracted to the same gender'},
-    {'label': 'Lesbian', 'desc': 'Women attracted to women'},
-    {'label': 'Bisexual', 'desc': 'Attracted to more than one gender'},
-    {'label': 'Asexual', 'desc': 'Little or no sexual attraction'},
-    {'label': 'Demisexual', 'desc': 'Attraction after emotional bond'},
-    {'label': 'Pansexual', 'desc': 'Attraction regardless of gender'},
-    {'label': 'Queer', 'desc': 'Not heterosexual or cisgender'},
-    {'label': 'Questioning', 'desc': 'Exploring or unsure'},
+  static const List<String> _orientationLabels = [
+    'Straight', 'Gay', 'Lesbian', 'Bisexual', 'Asexual',
+    'Demisexual', 'Pansexual', 'Queer', 'Questioning',
   ];
 
   bool get _isValid => _selected.isNotEmpty;
@@ -65,6 +58,17 @@ class _OrientationScreenState extends State<OrientationScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final descMap = <String, String>{
+      'Straight': l10n.orientationStraightDesc,
+      'Gay': l10n.orientationGayDesc,
+      'Lesbian': l10n.orientationLesbianDesc,
+      'Bisexual': l10n.orientationBisexualDesc,
+      'Asexual': l10n.orientationAsexualDesc,
+      'Demisexual': l10n.orientationDemisexualDesc,
+      'Pansexual': l10n.orientationPansexualDesc,
+      'Queer': l10n.orientationQueerDesc,
+      'Questioning': l10n.orientationQuestioningDesc,
+    };
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -122,12 +126,11 @@ class _OrientationScreenState extends State<OrientationScreen> {
                   const SizedBox(height: 20),
                   Expanded(
                     child: ListView.separated(
-                      itemCount: _orientations.length,
+                      itemCount: _orientationLabels.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 10),
                       itemBuilder: (context, index) {
-                        final o = _orientations[index];
-                        final label = o['label']!;
-                        final desc = o['desc']!;
+                        final label = _orientationLabels[index];
+                        final desc = descMap[label] ?? '';
                         final isSelected = _selected.contains(label);
                         final canSelect = _canSelect(label);
 

@@ -193,7 +193,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
                         // Communication style
                         _buildSection(
                           emoji: '📝',
-                          title: 'Communication style',
+                          title: AppLocalizations.of(context).aboutMeCommunicationStyle,
                           options: _communicationOptions,
                           selected: _communicationStyle,
                           onSelected: (v) => setState(() =>
@@ -205,7 +205,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
                         // Love language
                         _buildSection(
                           emoji: '❤️',
-                          title: 'Love language',
+                          title: AppLocalizations.of(context).aboutMeLoveLanguage,
                           options: _loveLanguageOptions,
                           selected: _loveLanguage,
                           onSelected: (v) => setState(() =>
@@ -216,7 +216,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
                         // Education
                         _buildSection(
                           emoji: '🎓',
-                          title: 'Education level',
+                          title: AppLocalizations.of(context).aboutMeEducationLevel,
                           options: _educationOptions,
                           selected: _education,
                           onSelected: (v) => setState(() =>

@@ -190,8 +190,8 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
                           borderRadius: BorderRadius.circular(27),
                         ),
                       ),
-                      child: const Text(
-                        'Next',
+                      child: Text(
+                        l10n.nextButton,
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),

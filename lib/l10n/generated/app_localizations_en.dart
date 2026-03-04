@@ -1205,4 +1205,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notVisibleOnProfile => 'Not visible on profile';
+
+  @override
+  String get orientationStraightDesc => 'Attracted to the opposite gender';
+
+  @override
+  String get orientationGayDesc => 'Attracted to the same gender';
+
+  @override
+  String get orientationLesbianDesc => 'Women attracted to women';
+
+  @override
+  String get orientationBisexualDesc => 'Attracted to more than one gender';
+
+  @override
+  String get orientationAsexualDesc => 'Little or no sexual attraction';
+
+  @override
+  String get orientationDemisexualDesc => 'Attraction after emotional bond';
+
+  @override
+  String get orientationPansexualDesc => 'Attraction regardless of gender';
+
+  @override
+  String get orientationQueerDesc => 'Not heterosexual or cisgender';
+
+  @override
+  String get orientationQuestioningDesc => 'Exploring or unsure';
+
+  @override
+  String get lifestyleSmokingTitle => 'How often do you smoke?';
+
+  @override
+  String get lifestyleExerciseTitle => 'Do you exercise?';
+
+  @override
+  String get lifestylePetsTitle => 'Do you have any pets?';
+
+  @override
+  String get aboutMeCommunicationStyle => 'Communication style';
+
+  @override
+  String get aboutMeLoveLanguage => 'Love language';
+
+  @override
+  String get aboutMeEducationLevel => 'Education level';
+
+  @override
+  String get interestCategoryOutdoors => 'Outdoors & adventure';
+
+  @override
+  String get interestCategoryValues => 'Values & causes';
+
+  @override
+  String get interestCategoryStayingIn => 'Staying in';
+
+  @override
+  String get interestCategoryTvMovies => 'TV & movies';
+
+  @override
+  String get interestCategoryMusic => 'Music';
+
+  @override
+  String get interestCategoryFoodDrink => 'Food & drink';
+
+  @override
+  String get interestCategoryGoingOut => 'Going out';
+
+  @override
+  String interestsSelectedCount(int count, int max) {
+    return '$count / $max selected';
+  }
 }

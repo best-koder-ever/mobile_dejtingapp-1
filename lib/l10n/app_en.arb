@@ -1556,4 +1556,62 @@
   "@notVisibleOnProfile": {
     "description": "Hint that this preference is private"
   }
+,
+
+  "orientationStraightDesc": "Attracted to the opposite gender",
+  "@orientationStraightDesc": { "description": "Straight orientation description" },
+  "orientationGayDesc": "Attracted to the same gender",
+  "@orientationGayDesc": { "description": "Gay orientation description" },
+  "orientationLesbianDesc": "Women attracted to women",
+  "@orientationLesbianDesc": { "description": "Lesbian orientation description" },
+  "orientationBisexualDesc": "Attracted to more than one gender",
+  "@orientationBisexualDesc": { "description": "Bisexual orientation description" },
+  "orientationAsexualDesc": "Little or no sexual attraction",
+  "@orientationAsexualDesc": { "description": "Asexual orientation description" },
+  "orientationDemisexualDesc": "Attraction after emotional bond",
+  "@orientationDemisexualDesc": { "description": "Demisexual orientation description" },
+  "orientationPansexualDesc": "Attraction regardless of gender",
+  "@orientationPansexualDesc": { "description": "Pansexual orientation description" },
+  "orientationQueerDesc": "Not heterosexual or cisgender",
+  "@orientationQueerDesc": { "description": "Queer orientation description" },
+  "orientationQuestioningDesc": "Exploring or unsure",
+  "@orientationQuestioningDesc": { "description": "Questioning orientation description" },
+
+  "lifestyleSmokingTitle": "How often do you smoke?",
+  "@lifestyleSmokingTitle": { "description": "Smoking section title in lifestyle screen" },
+  "lifestyleExerciseTitle": "Do you exercise?",
+  "@lifestyleExerciseTitle": { "description": "Exercise section title in lifestyle screen" },
+  "lifestylePetsTitle": "Do you have any pets?",
+  "@lifestylePetsTitle": { "description": "Pets section title in lifestyle screen" },
+
+  "aboutMeCommunicationStyle": "Communication style",
+  "@aboutMeCommunicationStyle": { "description": "About me section header for communication style" },
+  "aboutMeLoveLanguage": "Love language",
+  "@aboutMeLoveLanguage": { "description": "About me section header for love language" },
+  "aboutMeEducationLevel": "Education level",
+  "@aboutMeEducationLevel": { "description": "About me section header for education level" },
+
+  "interestCategoryOutdoors": "Outdoors & adventure",
+  "@interestCategoryOutdoors": { "description": "Interest category: outdoors" },
+  "interestCategoryValues": "Values & causes",
+  "@interestCategoryValues": { "description": "Interest category: values" },
+  "interestCategoryStayingIn": "Staying in",
+  "@interestCategoryStayingIn": { "description": "Interest category: staying in" },
+  "interestCategoryTvMovies": "TV & movies",
+  "@interestCategoryTvMovies": { "description": "Interest category: tv & movies" },
+  "interestCategoryMusic": "Music",
+  "@interestCategoryMusic": { "description": "Interest category: music" },
+  "interestCategoryFoodDrink": "Food & drink",
+  "@interestCategoryFoodDrink": { "description": "Interest category: food & drink" },
+  "interestCategoryGoingOut": "Going out",
+  "@interestCategoryGoingOut": { "description": "Interest category: going out" },
+
+  "interestsSelectedCount": "{count} / {max} selected",
+  "@interestsSelectedCount": {
+    "description": "Interest selection counter",
+    "placeholders": {
+      "count": { "type": "int" },
+      "max": { "type": "int" }
+    }
+  }
 }
