@@ -2443,6 +2443,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} / {max} selected'**
   String interestsSelectedCount(int count, int max);
+
+  /// Error shown when user enters an offensive or blocked name
+  ///
+  /// In en, this message translates to:
+  /// **'This name is not allowed. Please choose another.'**
+  String get nameNotAllowed;
 }
 
 class _AppLocalizationsDelegate

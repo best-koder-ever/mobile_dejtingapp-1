@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 /// Lifestyle Habits Screen — Smoking, Exercise, Pets
 /// Optional screen that contributes to profile completeness %
@@ -12,7 +13,7 @@ class LifestyleScreen extends StatefulWidget {
 }
 
 class _LifestyleScreenState extends State<LifestyleScreen> {
-  static const Color _coral = Color(0xFFFF6B6B);
+  static const Color _coral = AppTheme.primaryColor;
 
   // Selected values (null = not answered)
   String? _smoking;
@@ -81,7 +82,7 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: AppTheme.textPrimary,
                 ),
               ),
             ),
@@ -101,20 +102,20 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
                     horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? _coral
-                      : Colors.white,
+                      ? AppTheme.primaryColor
+                      : AppTheme.surfaceColor,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
-                        ? _coral
-                        : Colors.grey[300]!,
+                        ? AppTheme.primaryColor
+                        : AppTheme.dividerColor,
                     width: 1.5,
                   ),
                 ),
                 child: Text(
                   option,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black87,
+                    color: isSelected ? AppTheme.textOnPrimary : AppTheme.textPrimary,
                     fontWeight: isSelected
                         ? FontWeight.w600
                         : FontWeight.normal,
@@ -135,12 +136,12 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
         _smoking != null || _exercise != null || _pets != null;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
@@ -148,11 +149,11 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
             onPressed: _skip,
             child: Text(
               AppLocalizations.of(context).skipButton,
-              style: TextStyle(color: Colors.grey[600], fontSize: 15),
+              style: TextStyle(color: AppTheme.textSecondary, fontSize: 15),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: AppTheme.textPrimary),
             onPressed: () => OnboardingProvider.of(context).abort(context),
           ),
         ],
@@ -168,8 +169,8 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
                     borderRadius: BorderRadius.circular(4),
                     child: LinearProgressIndicator(
                       value: OnboardingProvider.of(context).progress(context),
-                      backgroundColor: Colors.grey[200],
-                      valueColor: const AlwaysStoppedAnimation(_coral),
+                      backgroundColor: AppTheme.dividerColor,
+                      valueColor: const AlwaysStoppedAnimation(AppTheme.primaryColor),
                       minHeight: 4,
                     ),
                   ),
@@ -186,7 +187,7 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: AppTheme.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -194,7 +195,7 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
                           AppLocalizations.of(context).lifestyleSubtitle,
                           style: TextStyle(
                             fontSize: 15,
-                            color: Colors.grey[600],
+                            color: AppTheme.textSecondary,
                             height: 1.4,
                           ),
                         ),
@@ -247,8 +248,8 @@ class _LifestyleScreenState extends State<LifestyleScreen> {
                       onPressed: _continue,
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            hasAnySelection ? _coral : _coral.withAlpha(102),
-                        foregroundColor: Colors.white,
+                            hasAnySelection ? AppTheme.primaryColor : AppTheme.primaryColor.withAlpha(102),
+                        foregroundColor: AppTheme.surfaceColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(26),
                         ),

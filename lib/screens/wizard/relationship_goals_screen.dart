@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 /// Relationship Goals Screen (ONB-110)
 /// Card grid with emoji + label, single selection
@@ -28,21 +29,21 @@ class _RelationshipGoalsScreenState extends State<RelationshipGoalsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           TextButton(
             onPressed: () { OnboardingProvider.of(context).goNext(context); },
-            child: Text(AppLocalizations.of(context).skipButton, style: TextStyle(color: Colors.grey[600], fontSize: 15)),
+            child: Text(AppLocalizations.of(context).skipButton, style: TextStyle(color: AppTheme.textSecondary, fontSize: 15)),
           ),
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: AppTheme.textPrimary),
             onPressed: () => OnboardingProvider.of(context).abort(context),
           ),
         ],
@@ -59,15 +60,15 @@ class _RelationshipGoalsScreenState extends State<RelationshipGoalsScreen> {
                     borderRadius: BorderRadius.circular(4),
                     child: LinearProgressIndicator(
                       value: OnboardingProvider.of(context).progress(context),
-                      backgroundColor: Colors.grey[200],
-                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFF6B6B)),
+                      backgroundColor: AppTheme.dividerColor,
+                      valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
                       minHeight: 4,
                     ),
                   ),
                   const SizedBox(height: 32),
                   Text(
                     AppLocalizations.of(context).whatAreYouLookingFor,
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
                   ),
                   const SizedBox(height: 24),
                   Expanded(
@@ -83,11 +84,11 @@ class _RelationshipGoalsScreenState extends State<RelationshipGoalsScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? const Color(0xFFFF6B6B).withAlpha(26)
-                                  : Colors.white,
+                                  ? AppTheme.primaryColor.withAlpha(26)
+                                  : AppTheme.surfaceColor,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: isSelected ? const Color(0xFFFF6B6B) : Colors.grey[300]!,
+                                color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
                                 width: isSelected ? 2 : 1,
                               ),
                             ),
@@ -102,7 +103,7 @@ class _RelationshipGoalsScreenState extends State<RelationshipGoalsScreen> {
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                                    color: isSelected ? const Color(0xFFFF6B6B) : Colors.black87,
+                                    color: isSelected ? AppTheme.primaryColor : AppTheme.textPrimary,
                                   ),
                                 ),
                               ],
@@ -114,7 +115,7 @@ class _RelationshipGoalsScreenState extends State<RelationshipGoalsScreen> {
                   ),
                   Text(
                     AppLocalizations.of(context).notShownUnlessYouChoose,
-                    style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                    style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
@@ -124,10 +125,10 @@ class _RelationshipGoalsScreenState extends State<RelationshipGoalsScreen> {
                     child: ElevatedButton(
                       onPressed: _isValid ? () { OnboardingProvider.of(context).data.relationshipGoal = _selected; OnboardingProvider.of(context).goNext(context); } : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF6B6B),
-                        foregroundColor: Colors.white,
-                        disabledBackgroundColor: Colors.grey[300],
-                        disabledForegroundColor: Colors.white70,
+                        backgroundColor: AppTheme.primaryColor,
+                        foregroundColor: AppTheme.surfaceColor,
+                        disabledBackgroundColor: AppTheme.surfaceElevated,
+                        disabledForegroundColor: AppTheme.textTertiary,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(27)),
                       ),
                       child: Text(AppLocalizations.of(context).nextButton, style: TextStyle(fontSize: 18)),

@@ -3,6 +3,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../services/onboarding_api_service.dart';
 import '../../services/api_service.dart';
+import '../../theme/app_theme.dart';
 
 /// Onboarding Complete Screen
 /// Submits wizard data to UserService, then celebrates and navigates to /home.
@@ -72,7 +73,7 @@ class _OnboardingCompleteScreenState extends State<OnboardingCompleteScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       body: SafeArea(
         child: Column(
           children: [
@@ -80,8 +81,8 @@ class _OnboardingCompleteScreenState extends State<OnboardingCompleteScreen>
               borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: 1.0,
-                backgroundColor: Colors.grey[200],
-                valueColor: const AlwaysStoppedAnimation(Color(0xFFFF6B6B)),
+                backgroundColor: AppTheme.dividerColor,
+                valueColor: const AlwaysStoppedAnimation(AppTheme.primaryColor),
                 minHeight: 4,
               ),
             ),
@@ -103,11 +104,11 @@ class _OnboardingCompleteScreenState extends State<OnboardingCompleteScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(color: Color(0xFFFF6B6B)),
+          CircularProgressIndicator(color: AppTheme.primaryColor),
           SizedBox(height: 24),
           Text(
             AppLocalizations.of(context).settingUpProfile,
-            style: TextStyle(fontSize: 18, color: Colors.grey),
+            style: TextStyle(fontSize: 18, color: AppTheme.textSecondary),
           ),
         ],
       ),
@@ -127,12 +128,12 @@ class _OnboardingCompleteScreenState extends State<OnboardingCompleteScreen>
             style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.black),
+                color: AppTheme.textPrimary),
           ),
           const SizedBox(height: 12),
           Text(
             _error!,
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
+            style: const TextStyle(fontSize: 14, color: AppTheme.textSecondary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -148,12 +149,12 @@ class _OnboardingCompleteScreenState extends State<OnboardingCompleteScreen>
                 _submitProfile();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF6B6B),
+                backgroundColor: AppTheme.primaryColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(27)),
               ),
               child: Text(AppLocalizations.of(context).tryAgainButton,
-                  style: TextStyle(fontSize: 18, color: Colors.white)),
+                  style: TextStyle(fontSize: 18, color: AppTheme.textOnPrimary)),
             ),
           ),
           const SizedBox(height: 16),
@@ -164,7 +165,7 @@ class _OnboardingCompleteScreenState extends State<OnboardingCompleteScreen>
                   context, '/home', (route) => false);
             },
             child: Text(AppLocalizations.of(context).skipForNow,
-                style: TextStyle(color: Colors.grey)),
+                style: TextStyle(color: AppTheme.textSecondary)),
           ),
         ],
       ),
@@ -185,10 +186,10 @@ class _OnboardingCompleteScreenState extends State<OnboardingCompleteScreen>
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
-                  colors: [Color(0xFFFF7F50), Color(0xFFFF6B6B)],
+                  colors: [Color(0xFFFF7F50), AppTheme.primaryColor],
                 ),
               ),
-              child: const Icon(Icons.check, size: 64, color: Colors.white),
+              child: const Icon(Icons.check, size: 64, color: AppTheme.textOnPrimary),
             ),
           ),
           SizedBox(height: 40),
@@ -201,14 +202,14 @@ class _OnboardingCompleteScreenState extends State<OnboardingCompleteScreen>
                   style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black),
+                      color: AppTheme.textPrimary),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 16),
                 Text(
                   AppLocalizations.of(context).profileReadySubtitle,
                   style:
-                      TextStyle(fontSize: 16, color: Colors.grey, height: 1.5),
+                      TextStyle(fontSize: 16, color: AppTheme.textSecondary, height: 1.5),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -226,12 +227,12 @@ class _OnboardingCompleteScreenState extends State<OnboardingCompleteScreen>
                       context, '/home', (route) => false);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF6B6B),
+                  backgroundColor: AppTheme.primaryColor,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(27)),
                 ),
                 child: Text(AppLocalizations.of(context).startExploring,
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
+                    style: TextStyle(fontSize: 18, color: AppTheme.textOnPrimary)),
               ),
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 /// Interests Screen — "What are you into?"
 /// Categorized chip selection, max 10 interests total
@@ -13,7 +14,7 @@ class InterestsScreen extends StatefulWidget {
 }
 
 class _InterestsScreenState extends State<InterestsScreen> {
-  static const Color _coral = Color(0xFFFF6B6B);
+  static const Color _coral = AppTheme.primaryColor;
   static const int _maxInterests = 10;
 
   final Set<String> _selected = {};
@@ -95,12 +96,12 @@ class _InterestsScreenState extends State<InterestsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
@@ -108,11 +109,11 @@ class _InterestsScreenState extends State<InterestsScreen> {
             onPressed: _skip,
             child: Text(
               AppLocalizations.of(context).skipButton,
-              style: TextStyle(color: Colors.grey[600], fontSize: 15),
+              style: TextStyle(color: AppTheme.textSecondary, fontSize: 15),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: AppTheme.textPrimary),
             onPressed: () => OnboardingProvider.of(context).abort(context),
           ),
         ],
@@ -128,8 +129,8 @@ class _InterestsScreenState extends State<InterestsScreen> {
                     borderRadius: BorderRadius.circular(4),
                     child: LinearProgressIndicator(
                       value: OnboardingProvider.of(context).progress(context),
-                      backgroundColor: Colors.grey[200],
-                      valueColor: const AlwaysStoppedAnimation(_coral),
+                      backgroundColor: AppTheme.dividerColor,
+                      valueColor: const AlwaysStoppedAnimation(AppTheme.primaryColor),
                       minHeight: 4,
                     ),
                   ),
@@ -146,7 +147,7 @@ class _InterestsScreenState extends State<InterestsScreen> {
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: AppTheme.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -154,7 +155,7 @@ class _InterestsScreenState extends State<InterestsScreen> {
                           AppLocalizations.of(context).addUpToInterests(_maxInterests),
                           style: TextStyle(
                             fontSize: 15,
-                            color: Colors.grey[600],
+                            color: AppTheme.textSecondary,
                             height: 1.4,
                           ),
                         ),
@@ -165,8 +166,8 @@ class _InterestsScreenState extends State<InterestsScreen> {
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: _selected.length >= _maxInterests
-                                ? _coral
-                                : Colors.grey[600],
+                                ? AppTheme.primaryColor
+                                : AppTheme.textSecondary,
                           ),
                         ),
                         const SizedBox(height: 24),
@@ -204,7 +205,7 @@ class _InterestsScreenState extends State<InterestsScreen> {
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
-                                        color: Colors.black87,
+                                        color: AppTheme.textPrimary,
                                       ),
                                     ),
                                   ],
@@ -230,16 +231,16 @@ class _InterestsScreenState extends State<InterestsScreen> {
                                             horizontal: 14, vertical: 8),
                                         decoration: BoxDecoration(
                                           color: isSelected
-                                              ? _coral
-                                              : Colors.white,
+                                              ? AppTheme.primaryColor
+                                              : AppTheme.surfaceColor,
                                           borderRadius:
                                               BorderRadius.circular(20),
                                           border: Border.all(
                                             color: isSelected
-                                                ? _coral
+                                                ? AppTheme.primaryColor
                                                 : isFull
-                                                    ? Colors.grey[200]!
-                                                    : Colors.grey[300]!
+                                                    ? AppTheme.dividerColor
+                                                    : AppTheme.dividerColor
                                                         .withAlpha(51),
                                             width: 1.5,
                                           ),
@@ -248,10 +249,10 @@ class _InterestsScreenState extends State<InterestsScreen> {
                                           interest,
                                           style: TextStyle(
                                             color: isSelected
-                                                ? Colors.white
+                                                ? AppTheme.textOnPrimary
                                                 : isFull
-                                                    ? Colors.grey[400]!
-                                                    : Colors.black87,
+                                                    ? AppTheme.textTertiary
+                                                    : AppTheme.textPrimary,
                                             fontWeight: isSelected
                                                 ? FontWeight.w600
                                                 : FontWeight.normal,
@@ -283,9 +284,9 @@ class _InterestsScreenState extends State<InterestsScreen> {
                       onPressed: _continue,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _selected.isNotEmpty
-                            ? _coral
-                            : _coral.withAlpha(102),
-                        foregroundColor: Colors.white,
+                            ? AppTheme.primaryColor
+                            : AppTheme.primaryColor.withAlpha(102),
+                        foregroundColor: AppTheme.surfaceColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(26),
                         ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../widgets/dev_mode_banner.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 /// Location Permission Screen (T026 gap)
 /// Asks user to enable location services for distance-based matching.
@@ -12,17 +13,17 @@ class LocationPermissionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: AppTheme.textPrimary),
             onPressed: () => OnboardingProvider.of(context).abort(context),
           ),
         ],
@@ -35,8 +36,8 @@ class LocationPermissionScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
                   value: OnboardingProvider.of(context).progress(context),
-                  backgroundColor: Colors.grey[200],
-                  valueColor: const AlwaysStoppedAnimation(Color(0xFFFF6B6B)),
+                  backgroundColor: AppTheme.dividerColor,
+                  valueColor: const AlwaysStoppedAnimation(AppTheme.primaryColor),
                   minHeight: 4,
                 ),
               ),
@@ -49,7 +50,7 @@ class LocationPermissionScreen extends StatelessWidget {
                       const Icon(
                         Icons.location_on,
                         size: 80,
-                        color: Color(0xFFFF6B6B),
+                        color: AppTheme.primaryColor,
                       ),
                       const SizedBox(height: 32),
                       Text(
@@ -57,7 +58,7 @@ class LocationPermissionScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: AppTheme.textPrimary,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -66,7 +67,7 @@ class LocationPermissionScreen extends StatelessWidget {
                         AppLocalizations.of(context).locationDescription,
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.grey[600],
+                          color: AppTheme.textSecondary,
                           height: 1.5,
                         ),
                         textAlign: TextAlign.center,
@@ -83,14 +84,14 @@ class LocationPermissionScreen extends StatelessWidget {
                             OnboardingProvider.of(context).goNext(context);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF6B6B),
+                            backgroundColor: AppTheme.primaryColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(27),
                             ),
                           ),
                           child: Text(
                             AppLocalizations.of(context).enableLocationBtn,
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                            style: TextStyle(fontSize: 18, color: AppTheme.textOnPrimary),
                           ),
                         ),
                       ),
@@ -104,7 +105,7 @@ class LocationPermissionScreen extends StatelessWidget {
                           AppLocalizations.of(context).notNow,
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.grey[500],
+                            color: AppTheme.textSecondary,
                           ),
                         ),
                       ),

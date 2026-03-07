@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 /// Sexual Orientation Screen
 ///
@@ -71,22 +72,22 @@ class _OrientationScreenState extends State<OrientationScreen> {
     };
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           TextButton(
             onPressed: () => OnboardingProvider.of(context).goNext(context),
             child: Text(l10n.skipButton,
-                style: TextStyle(color: Colors.grey[600], fontSize: 15)),
+                style: TextStyle(color: AppTheme.textSecondary, fontSize: 15)),
           ),
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: AppTheme.textPrimary),
             onPressed: () => OnboardingProvider.of(context).abort(context),
           ),
         ],
@@ -97,9 +98,9 @@ class _OrientationScreenState extends State<OrientationScreen> {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: OnboardingProvider.of(context).progress(context),
-              backgroundColor: Colors.grey[200],
+              backgroundColor: AppTheme.dividerColor,
               valueColor:
-                  const AlwaysStoppedAnimation<Color>(Color(0xFFFF6B6B)),
+                  const AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
               minHeight: 4,
             ),
           ),
@@ -115,13 +116,13 @@ class _OrientationScreenState extends State<OrientationScreen> {
                     style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: AppTheme.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     l10n.selectOrientations,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
                   ),
                   const SizedBox(height: 20),
                   Expanded(
@@ -143,14 +144,14 @@ class _OrientationScreenState extends State<OrientationScreen> {
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? const Color(0xFFFF6B6B).withAlpha(25)
-                                  : Colors.white,
+                                  ? AppTheme.primaryColor.withAlpha(25)
+                                  : AppTheme.surfaceColor,
                               border: Border.all(
                                 color: isSelected
-                                    ? const Color(0xFFFF6B6B)
+                                    ? AppTheme.primaryColor
                                     : canSelect
-                                        ? Colors.grey[300]!
-                                        : Colors.grey[200]!,
+                                        ? AppTheme.dividerColor
+                                        : AppTheme.dividerColor,
                                 width: isSelected ? 2 : 1,
                               ),
                               borderRadius: BorderRadius.circular(12),
@@ -170,8 +171,8 @@ class _OrientationScreenState extends State<OrientationScreen> {
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                             color: isSelected
-                                                ? const Color(0xFFFF6B6B)
-                                                : Colors.black87,
+                                                ? AppTheme.primaryColor
+                                                : AppTheme.textPrimary,
                                           ),
                                         ),
                                         const SizedBox(height: 4),
@@ -179,7 +180,7 @@ class _OrientationScreenState extends State<OrientationScreen> {
                                           desc,
                                           style: TextStyle(
                                             fontSize: 13,
-                                            color: Colors.grey[500],
+                                            color: AppTheme.textSecondary,
                                             height: 1.3,
                                           ),
                                         ),
@@ -189,7 +190,7 @@ class _OrientationScreenState extends State<OrientationScreen> {
                                   if (isSelected) ...[
                                     const SizedBox(width: 12),
                                     const Icon(Icons.check_circle,
-                                        color: Color(0xFFFF6B6B), size: 24),
+                                        color: AppTheme.primaryColor, size: 24),
                                   ],
                                 ],
                               ),
@@ -205,13 +206,13 @@ class _OrientationScreenState extends State<OrientationScreen> {
                         value: _showOnProfile,
                         onChanged: (v) =>
                             setState(() => _showOnProfile = v ?? false),
-                        activeColor: const Color(0xFFFF6B6B),
+                        activeColor: AppTheme.primaryColor,
                       ),
                       Expanded(
                         child: Text(
                           l10n.showOrientationOnProfile,
                           style:
-                              TextStyle(fontSize: 14, color: Colors.grey[600]),
+                              TextStyle(fontSize: 14, color: AppTheme.textSecondary),
                         ),
                       ),
                     ],
@@ -231,16 +232,16 @@ class _OrientationScreenState extends State<OrientationScreen> {
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF6B6B),
-                        disabledBackgroundColor: Colors.grey[300],
-                        disabledForegroundColor: Colors.white70,
+                        backgroundColor: AppTheme.primaryColor,
+                        disabledBackgroundColor: AppTheme.surfaceElevated,
+                        disabledForegroundColor: AppTheme.textTertiary,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(27)),
                       ),
                       child: Text(
                         l10n.nextButton,
                         style:
-                            const TextStyle(fontSize: 18, color: Colors.white),
+                            const TextStyle(fontSize: 18, color: AppTheme.textOnPrimary),
                       ),
                     ),
                   ),

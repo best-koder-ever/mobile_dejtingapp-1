@@ -6,6 +6,7 @@ import 'package:smart_auth/smart_auth.dart';
 import '../../config/dev_mode.dart';
 import '../../services/firebase_phone_auth_service.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 /// Phone Number Entry Screen
 /// On Android: auto-shows Phone Number Hint popup (one-tap, like Uber/Rider).
@@ -25,7 +26,7 @@ class PhoneEntryScreen extends StatefulWidget {
 }
 
 class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
-  static const Color coralColor = Color(0xFFFF6B6B);
+  static const Color coralColor = AppTheme.primaryColor;
 
   final TextEditingController _phoneController = TextEditingController();
   final SmartAuth _smartAuth = SmartAuth.instance;
@@ -153,7 +154,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(AppLocalizations.of(context).selectCountry,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
             const SizedBox(height: 16),
             _buildCountryOption('🇸🇪', 'Sweden', '+46'),
             _buildCountryOption('🇺🇸', 'United States', '+1'),
@@ -300,18 +301,18 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
     final isSignIn = onboarding == null;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           if (!isSignIn)
             IconButton(
-              icon: const Icon(Icons.close, color: Colors.black),
+              icon: const Icon(Icons.close, color: AppTheme.textPrimary),
               onPressed: () => onboarding.abort(context),
             ),
         ],
@@ -330,7 +331,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
                         value: onboarding.progress(context),
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor: AppTheme.dividerColor,
                         valueColor: const AlwaysStoppedAnimation(coralColor),
                         minHeight: 4,
                       ),
@@ -344,13 +345,13 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                     style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black),
+                        color: AppTheme.textPrimary),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     isSignIn ? l10n.signInWithPhoneDescription : l10n.phoneVerificationExplainer,
                     style: TextStyle(
-                        fontSize: 16, color: Colors.black54, height: 1.5),
+                        fontSize: 16, color: AppTheme.textSecondary, height: 1.5),
                   ),
                   const SizedBox(height: 32),
 
@@ -360,18 +361,18 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                       margin: const EdgeInsets.only(bottom: 12),
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.green[50],
+                        color: AppTheme.successColor.withAlpha(30),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.green[300]!),
+                        border: Border.all(color: AppTheme.successColor.withAlpha(120)),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.bug_report, color: Colors.green[700], size: 18),
+                          Icon(Icons.bug_report, color: AppTheme.successColor, size: 18),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               'Test mode: ${DevMode.fakePhone} pre-filled. Tap Continue!',
-                              style: TextStyle(fontSize: 13, color: Colors.green[800], fontWeight: FontWeight.w500),
+                              style: TextStyle(fontSize: 13, color: AppTheme.successColor, fontWeight: FontWeight.w500),
                             ),
                           ),
                         ],
@@ -383,8 +384,8 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                     decoration: BoxDecoration(
                       border: Border.all(
                           color: _errorMessage != null
-                              ? Colors.red
-                              : Colors.grey[300]!),
+                              ? AppTheme.errorColor
+                              : AppTheme.dividerColor),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     padding:
@@ -408,7 +409,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                         ),
                         const SizedBox(width: 8),
                         Container(
-                            width: 1, height: 40, color: Colors.grey[300]),
+                            width: 1, height: 40, color: AppTheme.dividerColor),
                         const SizedBox(width: 12),
                         Expanded(
                           child: TextField(
@@ -423,7 +424,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                               border: InputBorder.none,
                               hintText: l10n.phoneNumberHint,
                               hintStyle: const TextStyle(
-                                  color: Colors.grey,
+                                  color: AppTheme.textSecondary,
                                   fontWeight: FontWeight.normal),
                             ),
                             inputFormatters: [
@@ -442,7 +443,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                     const SizedBox(height: 8),
                     Text(
                       _errorMessage!,
-                      style: const TextStyle(color: Colors.red, fontSize: 14),
+                      style: const TextStyle(color: AppTheme.errorColor, fontSize: 14),
                     ),
                   ],
 
@@ -468,19 +469,19 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                        color: Colors.grey[100],
+                        color: AppTheme.surfaceColor,
                         borderRadius: BorderRadius.circular(8)),
                     child: Row(
                       children: [
                         Icon(Icons.info_outline,
-                            color: Colors.grey[700], size: 20),
+                            color: AppTheme.textPrimary, size: 20),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             l10n.continueInfoBox,
                             style: TextStyle(
                                 fontSize: 13,
-                                color: Colors.grey[700],
+                                color: AppTheme.textPrimary,
                                 height: 1.4),
                           ),
                         ),
@@ -499,9 +500,9 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                           : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: coralColor,
-                        disabledBackgroundColor: Colors.grey[300],
-                        foregroundColor: Colors.white,
-                        disabledForegroundColor: Colors.grey[500],
+                        disabledBackgroundColor: AppTheme.surfaceElevated,
+                        foregroundColor: AppTheme.surfaceColor,
+                        disabledForegroundColor: AppTheme.textTertiary,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(28)),
                         elevation: _isValidPhone ? 2 : 0,
@@ -511,7 +512,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
                               height: 24,
                               width: 24,
                               child: CircularProgressIndicator(
-                                  color: Colors.white, strokeWidth: 2.5),
+                                  color: AppTheme.textOnPrimary, strokeWidth: 2.5),
                             )
                           : Text(l10n.continueButton,
                               style: const TextStyle(

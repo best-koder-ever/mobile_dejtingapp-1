@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 /// About Me Screen — Communication style, Love language, Education
 /// "What else makes you, you?" — optional profile enrichment
@@ -12,7 +13,7 @@ class AboutMeScreen extends StatefulWidget {
 }
 
 class _AboutMeScreenState extends State<AboutMeScreen> {
-  static const Color _coral = Color(0xFFFF6B6B);
+  static const Color _coral = AppTheme.primaryColor;
 
   // Single-select per section
   String? _communicationStyle;
@@ -73,7 +74,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: AppTheme.textPrimary,
                 ),
               ),
             ),
@@ -92,19 +93,19 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  color: isSelected ? _coral : Colors.white,
+                  color: isSelected ? AppTheme.primaryColor : AppTheme.surfaceColor,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
-                        ? _coral
-                        : Colors.grey[300]!,
+                        ? AppTheme.primaryColor
+                        : AppTheme.dividerColor,
                     width: 1.5,
                   ),
                 ),
                 child: Text(
                   option,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black87,
+                    color: isSelected ? AppTheme.textOnPrimary : AppTheme.textPrimary,
                     fontWeight:
                         isSelected ? FontWeight.w600 : FontWeight.normal,
                     fontSize: 14,
@@ -125,12 +126,12 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
         _education != null;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
@@ -138,11 +139,11 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
             onPressed: _skip,
             child: Text(
               AppLocalizations.of(context).skipButton,
-              style: TextStyle(color: Colors.grey[600], fontSize: 15),
+              style: TextStyle(color: AppTheme.textSecondary, fontSize: 15),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: AppTheme.textPrimary),
             onPressed: () => OnboardingProvider.of(context).abort(context),
           ),
         ],
@@ -158,8 +159,8 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
                     borderRadius: BorderRadius.circular(4),
                     child: LinearProgressIndicator(
                       value: OnboardingProvider.of(context).progress(context),
-                      backgroundColor: Colors.grey[200],
-                      valueColor: const AlwaysStoppedAnimation(_coral),
+                      backgroundColor: AppTheme.dividerColor,
+                      valueColor: const AlwaysStoppedAnimation(AppTheme.primaryColor),
                       minHeight: 4,
                     ),
                   ),
@@ -176,7 +177,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: AppTheme.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -184,7 +185,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
                           AppLocalizations.of(context).authenticitySubtitle,
                           style: TextStyle(
                             fontSize: 15,
-                            color: Colors.grey[600],
+                            color: AppTheme.textSecondary,
                             height: 1.4,
                           ),
                         ),
@@ -238,8 +239,8 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
                       onPressed: _finish,
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            hasAnySelection ? _coral : _coral.withAlpha(102),
-                        foregroundColor: Colors.white,
+                            hasAnySelection ? AppTheme.primaryColor : AppTheme.primaryColor.withAlpha(102),
+                        foregroundColor: AppTheme.surfaceColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(26),
                         ),

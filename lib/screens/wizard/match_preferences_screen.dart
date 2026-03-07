@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 /// Match Preferences Screen (ONB-100)
 /// Who do you want to match with? Select gender preferences.
@@ -19,12 +20,12 @@ class _MatchPreferencesScreenState extends State<MatchPreferencesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
@@ -37,10 +38,10 @@ class _MatchPreferencesScreenState extends State<MatchPreferencesScreen> {
               d.maxDistanceKm = 50;
               OnboardingProvider.of(context).goNext(context);
             },
-            child: Text(AppLocalizations.of(context).skipButton, style: TextStyle(color: Colors.grey[600], fontSize: 15)),
+            child: Text(AppLocalizations.of(context).skipButton, style: TextStyle(color: AppTheme.textSecondary, fontSize: 15)),
           ),
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: AppTheme.textPrimary),
             onPressed: () => OnboardingProvider.of(context).abort(context),
           ),
         ],
@@ -53,8 +54,8 @@ class _MatchPreferencesScreenState extends State<MatchPreferencesScreen> {
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
                   value: OnboardingProvider.of(context).progress(context),
-                  backgroundColor: Colors.grey[200],
-                  valueColor: const AlwaysStoppedAnimation(Color(0xFFFF6B6B)),
+                  backgroundColor: AppTheme.dividerColor,
+                  valueColor: const AlwaysStoppedAnimation(AppTheme.primaryColor),
                   minHeight: 4,
                 ),
               ),
@@ -69,7 +70,7 @@ class _MatchPreferencesScreenState extends State<MatchPreferencesScreen> {
                         style: const TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: AppTheme.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 40),
@@ -83,13 +84,13 @@ class _MatchPreferencesScreenState extends State<MatchPreferencesScreen> {
                             style: OutlinedButton.styleFrom(
                               side: BorderSide(
                                 color: _selected == option
-                                    ? const Color(0xFFFF6B6B)
+                                    ? AppTheme.primaryColor
                                     : Colors.grey,
                                 width: 2,
                               ),
                               backgroundColor: _selected == option
-                                  ? const Color(0xFFFF6B6B).withAlpha(25)
-                                  : Colors.white,
+                                  ? AppTheme.primaryColor.withAlpha(25)
+                                  : AppTheme.surfaceColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(27),
                               ),
@@ -99,8 +100,8 @@ class _MatchPreferencesScreenState extends State<MatchPreferencesScreen> {
                               style: TextStyle(
                                 fontSize: 18,
                                 color: _selected == option
-                                    ? const Color(0xFFFF6B6B)
-                                    : Colors.black,
+                                    ? AppTheme.primaryColor
+                                    : AppTheme.textPrimary,
                               ),
                             ),
                           ),
@@ -118,16 +119,16 @@ class _MatchPreferencesScreenState extends State<MatchPreferencesScreen> {
                                 }
                               : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF6B6B),
-                            disabledBackgroundColor: Colors.grey[300],
-                            disabledForegroundColor: Colors.white70,
+                            backgroundColor: AppTheme.primaryColor,
+                            disabledBackgroundColor: AppTheme.surfaceElevated,
+                            disabledForegroundColor: AppTheme.textTertiary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(27),
                             ),
                           ),
                           child: Text(
                             AppLocalizations.of(context).nextButton,
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                            style: TextStyle(fontSize: 18, color: AppTheme.textOnPrimary),
                           ),
                         ),
                       ),

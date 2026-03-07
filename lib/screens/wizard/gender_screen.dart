@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 class GenderScreen extends StatefulWidget {
   const GenderScreen({super.key});
@@ -22,6 +23,7 @@ class _GenderScreenState extends State<GenderScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: AppTheme.surfaceElevated,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -37,14 +39,14 @@ class _GenderScreenState extends State<GenderScreen> {
               Container(
                 width: 40, height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: AppTheme.dividerColor,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               const SizedBox(height: 16),
               Text(
                 AppLocalizations.of(context).selectGenderSheet,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
@@ -52,10 +54,10 @@ class _GenderScreenState extends State<GenderScreen> {
                 child: ListView(
                   controller: scrollCtrl,
                   children: _allOptions.map((g) => RadioListTile<String>(
-                    title: Text(g, style: const TextStyle(fontSize: 16, color: Colors.black)),
+                    title: Text(g, style: const TextStyle(fontSize: 16, color: AppTheme.textPrimary)),
                     value: g,
                     groupValue: _selected,
-                    activeColor: const Color(0xFFFF6B6B),
+                    activeColor: AppTheme.primaryColor,
                     onChanged: (v) {
                       setState(() => _selected = v);
                       setSheetState(() {});
@@ -74,17 +76,17 @@ class _GenderScreenState extends State<GenderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: AppTheme.textPrimary),
             onPressed: () => OnboardingProvider.of(context).abort(context),
           ),
         ],
@@ -95,8 +97,8 @@ class _GenderScreenState extends State<GenderScreen> {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: OnboardingProvider.of(context).progress(context),
-              backgroundColor: Colors.grey[200],
-              valueColor: const AlwaysStoppedAnimation(Color(0xFFFF6B6B)),
+              backgroundColor: AppTheme.dividerColor,
+              valueColor: const AlwaysStoppedAnimation(AppTheme.primaryColor),
               minHeight: 4,
             ),
           ),
@@ -111,7 +113,7 @@ class _GenderScreenState extends State<GenderScreen> {
                     style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: AppTheme.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 40),
@@ -124,12 +126,12 @@ class _GenderScreenState extends State<GenderScreen> {
                         onPressed: () => setState(() => _selected = g),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
-                            color: _selected == g ? const Color(0xFFFF6B6B) : Colors.grey,
+                            color: _selected == g ? AppTheme.primaryColor : AppTheme.dividerColor,
                             width: 2,
                           ),
                           backgroundColor: _selected == g
-                              ? const Color(0xFFFF6B6B).withAlpha(25)
-                              : Colors.white,
+                              ? AppTheme.primaryColor.withAlpha(25)
+                              : AppTheme.surfaceColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(27),
                           ),
@@ -138,7 +140,7 @@ class _GenderScreenState extends State<GenderScreen> {
                           g,
                           style: TextStyle(
                             fontSize: 18,
-                            color: _selected == g ? const Color(0xFFFF6B6B) : Colors.black,
+                            color: _selected == g ? AppTheme.primaryColor : AppTheme.textPrimary,
                           ),
                         ),
                       ),
@@ -154,13 +156,13 @@ class _GenderScreenState extends State<GenderScreen> {
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
                             color: (_selected != null && !_quickOptions.contains(_selected))
-                                ? const Color(0xFFFF6B6B)
-                                : Colors.grey,
+                                ? AppTheme.primaryColor
+                                : AppTheme.dividerColor,
                             width: 2,
                           ),
                           backgroundColor: (_selected != null && !_quickOptions.contains(_selected))
-                              ? const Color(0xFFFF6B6B).withAlpha(25)
-                              : Colors.white,
+                              ? AppTheme.primaryColor.withAlpha(25)
+                              : AppTheme.surfaceColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(27),
                           ),
@@ -175,32 +177,41 @@ class _GenderScreenState extends State<GenderScreen> {
                               style: TextStyle(
                                 fontSize: 18,
                                 color: (_selected != null && !_quickOptions.contains(_selected))
-                                    ? const Color(0xFFFF6B6B)
-                                    : Colors.black,
+                                    ? AppTheme.primaryColor
+                                    : AppTheme.textPrimary,
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
+                            const Icon(Icons.arrow_forward_ios, size: 16, color: AppTheme.textSecondary),
                           ],
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _showOnProfile,
-                        activeColor: const Color(0xFFFF6B6B),
-                        onChanged: (v) => setState(() => _showOnProfile = v ?? false),
-                      ),
-                      Expanded(
-                        child: Text(
-                          AppLocalizations.of(context).showGenderOnProfile,
-                          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  GestureDetector(
+                    onTap: () => setState(() => _showOnProfile = !_showOnProfile),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 24, height: 24,
+                          child: Checkbox(
+                            value: _showOnProfile,
+                            activeColor: AppTheme.primaryColor,
+                            checkColor: AppTheme.textOnPrimary,
+                            side: const BorderSide(color: AppTheme.textSecondary, width: 2),
+                            onChanged: (v) => setState(() => _showOnProfile = v ?? false),
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            AppLocalizations.of(context).showGenderOnProfile,
+                            style: const TextStyle(fontSize: 14, color: AppTheme.textSecondary),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const Spacer(),
                   SizedBox(
@@ -216,16 +227,16 @@ class _GenderScreenState extends State<GenderScreen> {
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF6B6B),
-                        disabledBackgroundColor: Colors.grey[300],
-                        disabledForegroundColor: Colors.white70,
+                        backgroundColor: AppTheme.primaryColor,
+                        disabledBackgroundColor: AppTheme.surfaceElevated,
+                        disabledForegroundColor: AppTheme.textTertiary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(27),
                         ),
                       ),
                       child: Text(
                         AppLocalizations.of(context).nextButton,
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        style: const TextStyle(fontSize: 18, color: AppTheme.textOnPrimary),
                       ),
                     ),
                   ),

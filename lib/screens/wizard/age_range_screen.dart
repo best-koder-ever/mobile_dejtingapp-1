@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 /// Age Range Preference Screen — consistent white-background style
 class AgeRangeScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class AgeRangeScreen extends StatefulWidget {
 class _AgeRangeScreenState extends State<AgeRangeScreen> {
   static const double _minAllowed = 18;
   static const double _maxAllowed = 100;
-  static const _coral = Color(0xFFFF6B6B);
+  
 
   late RangeValues _range;
 
@@ -42,17 +43,17 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
     final endAge = _range.end.round();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: AppTheme.textPrimary),
             onPressed: () => onboarding.abort(context),
           ),
         ],
@@ -64,8 +65,8 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: onboarding.progress(context),
-              backgroundColor: Colors.grey[200],
-              valueColor: const AlwaysStoppedAnimation(_coral),
+              backgroundColor: AppTheme.dividerColor,
+              valueColor: const AlwaysStoppedAnimation(AppTheme.primaryColor),
               minHeight: 4,
             ),
           ),
@@ -81,7 +82,7 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
                     style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: AppTheme.textPrimary,
                     ),
                   ),
 
@@ -94,7 +95,7 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
                       style: const TextStyle(
                         fontSize: 48,
                         fontWeight: FontWeight.w800,
-                        color: _coral,
+                        color: AppTheme.primaryColor,
                         letterSpacing: 1.5,
                       ),
                     ),
@@ -104,7 +105,7 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
                       l10n.yearsOld,
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey[600],
+                        color: AppTheme.textSecondary,
                       ),
                     ),
                   ),
@@ -114,10 +115,10 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
                   // Range slider
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(
-                      activeTrackColor: _coral,
-                      inactiveTrackColor: Colors.grey[300],
-                      thumbColor: _coral,
-                      overlayColor: _coral.withAlpha(40),
+                      activeTrackColor: AppTheme.primaryColor,
+                      inactiveTrackColor: AppTheme.dividerColor,
+                      thumbColor: AppTheme.primaryColor,
+                      overlayColor: AppTheme.primaryColor.withAlpha(40),
                       trackHeight: 4,
                       rangeThumbShape: const RoundRangeSliderThumbShape(
                         enabledThumbRadius: 14,
@@ -143,9 +144,9 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('${_minAllowed.round()}',
-                            style: TextStyle(color: Colors.grey[500], fontSize: 14)),
+                            style: TextStyle(color: AppTheme.textSecondary, fontSize: 14)),
                         Text('${_maxAllowed.round()}',
-                            style: TextStyle(color: Colors.grey[500], fontSize: 14)),
+                            style: TextStyle(color: AppTheme.textSecondary, fontSize: 14)),
                       ],
                     ),
                   ),
@@ -155,22 +156,22 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
                   // Bottom hints
                   Row(
                     children: [
-                      Icon(Icons.tune, color: Colors.grey[500], size: 18),
+                      Icon(Icons.tune, color: AppTheme.textSecondary, size: 18),
                       const SizedBox(width: 8),
                       Text(
                         l10n.editableInSettings,
-                        style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.visibility_off, color: Colors.grey[500], size: 18),
+                      Icon(Icons.visibility_off, color: AppTheme.textSecondary, size: 18),
                       const SizedBox(width: 8),
                       Text(
                         l10n.notVisibleOnProfile,
-                        style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
                       ),
                     ],
                   ),
@@ -184,15 +185,15 @@ class _AgeRangeScreenState extends State<AgeRangeScreen> {
                     child: ElevatedButton(
                       onPressed: _onNext,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _coral,
-                        foregroundColor: Colors.white,
+                        backgroundColor: AppTheme.primaryColor,
+                        foregroundColor: AppTheme.surfaceColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(27),
                         ),
                       ),
                       child: Text(
                         l10n.nextButton,
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        style: TextStyle(fontSize: 18, color: AppTheme.textOnPrimary),
                       ),
                     ),
                   ),

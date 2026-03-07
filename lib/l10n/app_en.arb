@@ -1614,4 +1614,9 @@
       "max": { "type": "int" }
     }
   }
+,
+  "nameNotAllowed": "This name is not allowed. Please choose another.",
+  "@nameNotAllowed": {
+    "description": "Error shown when user enters an offensive or blocked name"
+  }
 }

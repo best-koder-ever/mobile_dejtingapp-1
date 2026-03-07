@@ -6,6 +6,7 @@ import '../../widgets/dev_mode_banner.dart';
 import '../../providers/onboarding_provider.dart';
 import '../../services/photo_service.dart';
 import '../../services/api_service.dart' show AppState;
+import '../../theme/app_theme.dart';
 
 /// Photos Screen - Final onboarding step
 /// Grid of photo upload slots (Tinder-style 2x3 grid)
@@ -62,12 +63,12 @@ class _PhotosScreenState extends State<PhotosScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.camera_alt, color: Color(0xFFFF6B6B)),
+                leading: const Icon(Icons.camera_alt, color: AppTheme.primaryColor),
                 title: Text(AppLocalizations.of(context).takeAPhoto),
                 onTap: () => Navigator.pop(ctx, ImageSource.camera),
               ),
               ListTile(
-                leading: const Icon(Icons.photo_library, color: Color(0xFFFF6B6B)),
+                leading: const Icon(Icons.photo_library, color: AppTheme.primaryColor),
                 title: Text(AppLocalizations.of(context).chooseFromGallery),
                 onTap: () => Navigator.pop(ctx, ImageSource.gallery),
               ),
@@ -156,17 +157,17 @@ class _PhotosScreenState extends State<PhotosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: AppTheme.textPrimary),
             onPressed: () => OnboardingProvider.of(context).abort(context),
           ),
         ],
@@ -179,8 +180,8 @@ class _PhotosScreenState extends State<PhotosScreen> {
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
                   value: OnboardingProvider.of(context).progress(context),
-                  backgroundColor: Colors.grey[200],
-                  valueColor: const AlwaysStoppedAnimation(Color(0xFFFF6B6B)),
+                  backgroundColor: AppTheme.dividerColor,
+                  valueColor: const AlwaysStoppedAnimation(AppTheme.primaryColor),
                   minHeight: 4,
                 ),
               ),
@@ -192,12 +193,12 @@ class _PhotosScreenState extends State<PhotosScreen> {
                     children: [
                       Text(
                         AppLocalizations.of(context).addPhotos,
-                        style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         AppLocalizations.of(context).photosSubtitle,
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                        style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
                       ),
                       const SizedBox(height: 24),
 
@@ -226,17 +227,17 @@ class _PhotosScreenState extends State<PhotosScreen> {
                         child: ElevatedButton(
                           onPressed: (_isValid && !_isBusy) ? _finish : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF6B6B),
-                            disabledBackgroundColor: Colors.grey[300],
-                            disabledForegroundColor: Colors.white70,
+                            backgroundColor: AppTheme.primaryColor,
+                            disabledBackgroundColor: AppTheme.surfaceElevated,
+                            disabledForegroundColor: AppTheme.textTertiary,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(27)),
                           ),
                           child: _isBusy
                               ? const SizedBox(
                                   width: 24, height: 24,
-                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                  child: CircularProgressIndicator(color: AppTheme.textOnPrimary, strokeWidth: 2),
                                 )
-                              : Text(AppLocalizations.of(context).continueButton, style: TextStyle(fontSize: 18, color: Colors.white)),
+                              : Text(AppLocalizations.of(context).continueButton, style: TextStyle(fontSize: 18, color: AppTheme.textOnPrimary)),
                         ),
                       ),
                     ],
@@ -266,7 +267,7 @@ class _PhotosScreenState extends State<PhotosScreen> {
     } else {
       final needed = 2 - _photoCount;
       text = '$_photoCount/6 photos · Add $needed more';
-      color = Colors.grey[600]!;
+      color = AppTheme.textSecondary;
     }
 
     return Text(
@@ -300,21 +301,21 @@ class _PhotosScreenState extends State<PhotosScreen> {
       onTap: () => _addPhoto(index),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: AppTheme.surfaceColor,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[300]!, width: 1),
+          border: Border.all(color: AppTheme.dividerColor, width: 1),
         ),
         child: Center(
           child: Container(
             width: 32, height: 32,
             decoration: BoxDecoration(
-              color: const Color(0xFFFF6B6B),
+              color: AppTheme.primaryColor,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(color: Colors.black.withAlpha(25), blurRadius: 4, offset: const Offset(0, 2)),
               ],
             ),
-            child: const Icon(Icons.add, color: Colors.white, size: 20),
+            child: const Icon(Icons.add, color: AppTheme.textOnPrimary, size: 20),
           ),
         ),
       ),
@@ -335,7 +336,7 @@ class _PhotosScreenState extends State<PhotosScreen> {
             Image.file(slot.file, fit: BoxFit.cover),
             Container(color: Colors.black.withAlpha(100)),
             const Center(
-              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
+              child: CircularProgressIndicator(color: AppTheme.textOnPrimary, strokeWidth: 3),
             ),
           ],
         ),
@@ -349,7 +350,7 @@ class _PhotosScreenState extends State<PhotosScreen> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.red, width: 2),
+          border: Border.all(color: AppTheme.errorColor, width: 2),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(11),
@@ -362,9 +363,9 @@ class _PhotosScreenState extends State<PhotosScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.error_outline, color: Colors.red, size: 28),
+                    const Icon(Icons.error_outline, color: AppTheme.errorColor, size: 28),
                     const SizedBox(height: 4),
-                    Text(AppLocalizations.of(context).tapToRetry, style: TextStyle(color: Colors.white, fontSize: 11)),
+                    Text(AppLocalizations.of(context).tapToRetry, style: TextStyle(color: AppTheme.textOnPrimary, fontSize: 11)),
                   ],
                 ),
               ),
@@ -375,8 +376,8 @@ class _PhotosScreenState extends State<PhotosScreen> {
                   onTap: () => _removePhoto(index),
                   child: Container(
                     width: 24, height: 24,
-                    decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                    child: const Icon(Icons.close, size: 16, color: Colors.white),
+                    decoration: const BoxDecoration(color: AppTheme.errorColor, shape: BoxShape.circle),
+                    child: const Icon(Icons.close, size: 16, color: AppTheme.textOnPrimary),
                   ),
                 ),
               ),
@@ -393,7 +394,7 @@ class _PhotosScreenState extends State<PhotosScreen> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFFF6B6B), width: 2),
+          border: Border.all(color: AppTheme.primaryColor, width: 2),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(11),
@@ -406,8 +407,8 @@ class _PhotosScreenState extends State<PhotosScreen> {
                 top: 4, right: 4,
                 child: Container(
                   width: 24, height: 24,
-                  decoration: const BoxDecoration(color: Color(0xFFFF6B6B), shape: BoxShape.circle),
-                  child: const Icon(Icons.close, size: 16, color: Colors.white),
+                  decoration: const BoxDecoration(color: AppTheme.primaryColor, shape: BoxShape.circle),
+                  child: const Icon(Icons.close, size: 16, color: AppTheme.textOnPrimary),
                 ),
               ),
               // "Main" badge on first photo
@@ -417,12 +418,12 @@ class _PhotosScreenState extends State<PhotosScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFF6B6B),
+                      color: AppTheme.primaryColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       AppLocalizations.of(context).mainPhotoBadge,
-                      style: TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 10, color: AppTheme.textOnPrimary, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -435,7 +436,7 @@ class _PhotosScreenState extends State<PhotosScreen> {
                     color: Color(0xFF00C878),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.check, size: 14, color: Colors.white),
+                  child: const Icon(Icons.check, size: 14, color: AppTheme.textOnPrimary),
                 ),
               ),
             ],

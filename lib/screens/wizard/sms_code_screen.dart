@@ -10,6 +10,7 @@ import '../../services/firebase_phone_auth_service.dart';
 import '../../services/auth_session_manager.dart';
 import '../../services/api_service.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 /// SMS Verification Code Entry Screen
 /// 6-digit code input with auto-advance, resend timer, and retry limits.
@@ -28,7 +29,6 @@ class SmsCodeScreen extends StatefulWidget {
 }
 
 class _SmsCodeScreenState extends State<SmsCodeScreen> {
-  static const Color _coral = Color(0xFFFF6B6B);
   static const int _codeLength = 6;
   static const int _resendSeconds = 60;
   static const int _maxResends = 5;
@@ -221,13 +221,6 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
       } else if (DevMode.enabled) {
         debugPrint('🔧 DevMode: Keycloak exchange failed, skipping forward. Error: ${result.message}');
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('🔧 DevMode: Skipped Keycloak (not running). Phone verified via Firebase.'),
-              backgroundColor: Colors.orange,
-              duration: Duration(seconds: 3),
-            ),
-          );
           _handlePostAuth();
         }
       } else {
@@ -356,12 +349,12 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
     final onboarding = OnboardingProvider.maybeOf(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -379,8 +372,8 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
                         value: onboarding.progress(context),
-                        backgroundColor: Colors.grey[200],
-                        valueColor: const AlwaysStoppedAnimation(_coral),
+                        backgroundColor: AppTheme.dividerColor,
+                        valueColor: const AlwaysStoppedAnimation(AppTheme.primaryColor),
                         minHeight: 4,
                       ),
                     ),
@@ -389,14 +382,14 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
 
                   Text(
                     l10n.enterVerificationCode,
-                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black),
+                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     _phoneNumber != null
                         ? l10n.codeSentToPhone(_phoneNumber!)
                         : l10n.codeSentToPhoneFallback,
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600], height: 1.4),
+                    style: TextStyle(fontSize: 16, color: AppTheme.textSecondary, height: 1.4),
                   ),
                   const SizedBox(height: 16),
 
@@ -406,18 +399,18 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.green[50],
+                        color: AppTheme.successColor.withAlpha(30),
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.green[300]!),
+                        border: Border.all(color: AppTheme.successColor.withAlpha(120)),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.bug_report, color: Colors.green[700], size: 18),
+                          Icon(Icons.bug_report, color: AppTheme.successColor, size: 18),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               'Test mode: code ${DevMode.fakeSmsCode} auto-filled',
-                              style: TextStyle(fontSize: 13, color: Colors.green[800], fontWeight: FontWeight.w500),
+                              style: TextStyle(fontSize: 13, color: AppTheme.successColor, fontWeight: FontWeight.w500),
                             ),
                           ),
                         ],
@@ -428,43 +421,56 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
 
                   // 6 digit input boxes
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(_codeLength, (i) {
-                      return SizedBox(
-                        width: 48,
-                        height: 56,
-                        child: KeyboardListener(
-                          focusNode: FocusNode(),
-                          onKeyEvent: (e) => _onKeyPress(i, e),
-                          child: TextField(
-                            controller: _controllers[i],
-                            focusNode: _focusNodes[i],
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.number,
-                            maxLength: 1,
-                            enabled: !_isVerifying,
-                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
-                            decoration: InputDecoration(
-                              counterText: '',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: _errorMessage != null ? Colors.red : Colors.grey[300]!,
+                      return Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: i == 0 ? 0 : 4,
+                            right: i == _codeLength - 1 ? 0 : 4,
+                          ),
+                          child: AspectRatio(
+                            aspectRatio: 0.85,
+                            child: KeyboardListener(
+                              focusNode: FocusNode(),
+                              onKeyEvent: (e) => _onKeyPress(i, e),
+                              child: TextField(
+                                controller: _controllers[i],
+                                focusNode: _focusNodes[i],
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                maxLength: 1,
+                                enabled: !_isVerifying,
+                                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                                decoration: InputDecoration(
+                                  counterText: '',
+                                  contentPadding: EdgeInsets.zero,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      color: _errorMessage != null ? AppTheme.errorColor : AppTheme.dividerColor,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      color: _errorMessage != null ? AppTheme.errorColor : AppTheme.dividerColor,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(color: AppTheme.errorColor, width: 2),
+                                  ),
+                                  filled: true,
+                                  fillColor: _focusNodes[i].hasFocus ? AppTheme.surfaceElevated : AppTheme.surfaceColor,
                                 ),
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                onChanged: (v) => _onDigitChanged(i, v),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(color: _coral, width: 2),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: const BorderSide(color: Colors.red, width: 2),
-                              ),
-                              filled: true,
-                              fillColor: _focusNodes[i].hasFocus ? Colors.white : Colors.grey[50],
                             ),
-                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                            onChanged: (v) => _onDigitChanged(i, v),
                           ),
                         ),
                       );
@@ -473,7 +479,7 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
 
                   if (_errorMessage != null) ...[
                     const SizedBox(height: 16),
-                    Text(_errorMessage!, style: const TextStyle(color: Colors.red, fontSize: 14)),
+                    Text(_errorMessage!, style: const TextStyle(color: AppTheme.errorColor, fontSize: 14)),
                   ],
 
                   const SizedBox(height: 32),
@@ -483,9 +489,9 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
                     Center(
                       child: Column(
                         children: [
-                          const CircularProgressIndicator(color: _coral),
+                          const CircularProgressIndicator(color: AppTheme.primaryColor),
                           const SizedBox(height: 12),
-                          Text(l10n.verifying, style: const TextStyle(color: Colors.black)),
+                          Text(l10n.verifying, style: const TextStyle(color: AppTheme.textPrimary)),
                         ],
                       ),
                     ),
@@ -498,14 +504,14 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
                               onPressed: _resendCode,
                               child: Text(
                                 l10n.resendCode,
-                                style: const TextStyle(color: _coral, fontSize: 15, fontWeight: FontWeight.w600),
+                                style: const TextStyle(color: AppTheme.primaryColor, fontSize: 15, fontWeight: FontWeight.w600),
                               ),
                             )
                           : Text(
                               _resendCount >= _maxResends
                                   ? l10n.maxResendReached
                                   : l10n.resendCodeIn(_secondsRemaining),
-                              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                              style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
                             ),
                     ),
                   ],
@@ -522,8 +528,8 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
                         child: OutlinedButton(
                           onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: _coral,
-                            side: const BorderSide(color: _coral),
+                            foregroundColor: AppTheme.primaryColor,
+                            side: const BorderSide(color: AppTheme.primaryColor),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                           ),
                           child: Text(l10n.goBackButton, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
@@ -533,15 +539,15 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
 
                   Container(
                     padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(color: AppTheme.surfaceColor, borderRadius: BorderRadius.circular(8)),
                     child: Row(
                       children: [
-                        Icon(Icons.info_outline, color: Colors.grey[600], size: 20),
+                        Icon(Icons.info_outline, color: AppTheme.textSecondary, size: 20),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             l10n.smsRatesInfo,
-                            style: TextStyle(fontSize: 12, color: Colors.grey[600], height: 1.3),
+                            style: TextStyle(fontSize: 12, color: AppTheme.textSecondary, height: 1.3),
                           ),
                         ),
                       ],

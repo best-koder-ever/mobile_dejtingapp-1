@@ -2,6 +2,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../providers/onboarding_provider.dart';
+import '../../theme/app_theme.dart';
 
 /// Notification Permission Screen (T026 gap)
 /// Asks user to enable push notifications for matches and messages.
@@ -11,21 +12,21 @@ class NotificationPermissionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffoldDark,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           TextButton(
             onPressed: () { OnboardingProvider.of(context).data.notificationsGranted = false; OnboardingProvider.of(context).goNext(context); },
-            child: Text(AppLocalizations.of(context).skipButton, style: TextStyle(color: Colors.grey[600], fontSize: 15)),
+            child: Text(AppLocalizations.of(context).skipButton, style: TextStyle(color: AppTheme.textSecondary, fontSize: 15)),
           ),
           IconButton(
-            icon: const Icon(Icons.close, color: Colors.black),
+            icon: const Icon(Icons.close, color: AppTheme.textPrimary),
             onPressed: () => OnboardingProvider.of(context).abort(context),
           ),
         ],
@@ -38,8 +39,8 @@ class NotificationPermissionScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
                   value: OnboardingProvider.of(context).progress(context),
-                  backgroundColor: Colors.grey[200],
-                  valueColor: const AlwaysStoppedAnimation(Color(0xFFFF6B6B)),
+                  backgroundColor: AppTheme.dividerColor,
+                  valueColor: const AlwaysStoppedAnimation(AppTheme.primaryColor),
                   minHeight: 4,
                 ),
               ),
@@ -52,7 +53,7 @@ class NotificationPermissionScreen extends StatelessWidget {
                       const Icon(
                         Icons.notifications_active,
                         size: 80,
-                        color: Color(0xFFFF6B6B),
+                        color: AppTheme.primaryColor,
                       ),
                       const SizedBox(height: 32),
                       Text(
@@ -60,7 +61,7 @@ class NotificationPermissionScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: AppTheme.textPrimary,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -70,7 +71,7 @@ class NotificationPermissionScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFFFF6B6B),
+                          color: AppTheme.primaryColor,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -79,7 +80,7 @@ class NotificationPermissionScreen extends StatelessWidget {
                         AppLocalizations.of(context).notificationDescription,
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.grey[600],
+                          color: AppTheme.textSecondary,
                           height: 1.5,
                         ),
                         textAlign: TextAlign.center,
@@ -96,14 +97,14 @@ class NotificationPermissionScreen extends StatelessWidget {
                             OnboardingProvider.of(context).goNext(context);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF6B6B),
+                            backgroundColor: AppTheme.primaryColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(27),
                             ),
                           ),
                           child: Text(
                             AppLocalizations.of(context).enableNotificationsBtn,
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                            style: TextStyle(fontSize: 18, color: AppTheme.textOnPrimary),
                           ),
                         ),
                       ),
@@ -117,7 +118,7 @@ class NotificationPermissionScreen extends StatelessWidget {
                           AppLocalizations.of(context).notNow,
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.grey[500],
+                            color: AppTheme.textSecondary,
                           ),
                         ),
                       ),

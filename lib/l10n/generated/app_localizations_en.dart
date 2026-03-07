@@ -1276,4 +1276,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String interestsSelectedCount(int count, int max) {
     return '$count / $max selected';
   }
+
+  @override
+  String get nameNotAllowed =>
+      'This name is not allowed. Please choose another.';
 }
