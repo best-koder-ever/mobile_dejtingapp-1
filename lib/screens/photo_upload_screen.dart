@@ -422,7 +422,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
       }
     } catch (e) {
       _showStatusMessage('Failed to process photo: $e', isError: true);
-      print('Photo processing error: $e'); // Debug log
+      debugPrint('Photo processing error: $e'); // Debug log
     } finally {
       setState(() => isLoading = false);
     }
@@ -486,7 +486,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
       }
     } catch (e) {
       _showStatusMessage('Failed to process photo: $e', isError: true);
-      print('Photo processing error (web): $e');
+      debugPrint('Photo processing error (web): $e');
     } finally {
       setState(() => isLoading = false);
     }

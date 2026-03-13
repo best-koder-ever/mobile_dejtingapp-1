@@ -174,18 +174,18 @@ class EnvSwitcher {
   static void useDevelopment() {
     EnvironmentConfig.setEnvironment(Environment.development);
     if (kDebugMode) {
-      print('🔧 Switched to DEVELOPMENT environment');
-      print('Gateway: ${EnvironmentConfig.settings.gatewayUrl}');
-      print('Keycloak: ${EnvironmentConfig.settings.keycloakUrl}');
+      debugPrint('🔧 Switched to DEVELOPMENT environment');
+      debugPrint('Gateway: ${EnvironmentConfig.settings.gatewayUrl}');
+      debugPrint('Keycloak: ${EnvironmentConfig.settings.keycloakUrl}');
     }
   }
 
   static void useProduction() {
     EnvironmentConfig.setEnvironment(Environment.production);
     if (kDebugMode) {
-      print('🚀 Switched to PRODUCTION environment');
-      print('Gateway: ${EnvironmentConfig.settings.gatewayUrl}');
-      print('Keycloak: ${EnvironmentConfig.settings.keycloakUrl}');
+      debugPrint('🚀 Switched to PRODUCTION environment');
+      debugPrint('Gateway: ${EnvironmentConfig.settings.gatewayUrl}');
+      debugPrint('Keycloak: ${EnvironmentConfig.settings.keycloakUrl}');
     }
   }
 }

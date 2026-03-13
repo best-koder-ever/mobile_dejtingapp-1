@@ -32,12 +32,12 @@ class AppInitializationService {
         if (messagingAvailable) {
           await _messagingService.initialize(userId, authToken);
           if (kDebugMode) {
-            print('✅ Messaging service connected (userId=$userId)');
+            debugPrint('✅ Messaging service connected (userId=$userId)');
           }
         } else {
           if (!_warnedMessagingUnavailable) {
             if (kDebugMode) {
-              print('⚠️ Messaging service unavailable. Skipping initialization.');
+              debugPrint('⚠️ Messaging service unavailable. Skipping initialization.');
             }
             _warnedMessagingUnavailable = true;
           }
@@ -47,16 +47,16 @@ class AppInitializationService {
         try {
           await _matchmakingRealtimeService.initialize(authToken);
           if (kDebugMode) {
-            print('✅ MatchmakingRealtimeService connected');
+            debugPrint('✅ MatchmakingRealtimeService connected');
           }
         } catch (e) {
           if (kDebugMode) {
-            print('⚠️ MatchmakingRealtimeService init failed (non-fatal): $e');
+            debugPrint('⚠️ MatchmakingRealtimeService init failed (non-fatal): $e');
           }
         }
       } else {
         if (kDebugMode) {
-          print('User not logged in, skipping service initialization');
+          debugPrint('User not logged in, skipping service initialization');
         }
       }
 
@@ -91,7 +91,7 @@ class AppInitializationService {
       return response.statusCode >= 200 && response.statusCode < 500;
     } catch (e) {
       if (kDebugMode) {
-        print('Messaging health check failed: $e');
+        debugPrint('Messaging health check failed: $e');
       }
       return false;
     }

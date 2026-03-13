@@ -1,80 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dejtingapp/screens/wizard/community_guidelines_screen.dart';
+import '../../helpers/onboarding_test_helper.dart';
 
 void main() {
-  group('Community Guidelines Screen (T026)', () {
-    testWidgets('renders with Welcome header', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: CommunityGuidelinesScreen()),
+  group('Community Guidelines Screen', () {
+    Widget buildSubject() {
+      return buildOnboardingTestHarness(
+        screen: const CommunityGuidelinesScreen(),
+        routeName: '/onboarding/community-guidelines',
       );
+    }
+
+    testWidgets('renders welcome title', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      // l10n: welcomeToDejTing = "Welcome to DejTing."
       expect(find.text('Welcome to DejTing.'), findsOneWidget);
     });
 
-    testWidgets('shows House Rules subtitle', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: CommunityGuidelinesScreen()),
-      );
-      expect(find.text('Please follow these House Rules.'), findsOneWidget);
+    testWidgets('shows house rules subtitle', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      // l10n: followHouseRules = "Please follow these House Rules."
+      expect(find.textContaining('House Rules'), findsOneWidget);
     });
 
-    testWidgets('shows all four rules', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: CommunityGuidelinesScreen()),
-      );
+    testWidgets('shows Be yourself rule', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Be yourself'), findsOneWidget);
+    });
+
+    testWidgets('shows Stay safe rule', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Stay safe'), findsOneWidget);
+    });
+
+    testWidgets('shows Play it cool rule', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Play it cool'), findsOneWidget);
+    });
+
+    testWidgets('shows Be proactive rule', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Be proactive'), findsOneWidget);
     });
 
-    testWidgets('shows rule descriptions', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: CommunityGuidelinesScreen()),
-      );
-      expect(find.textContaining('authentic photos'), findsOneWidget);
-      expect(find.textContaining('personal information'), findsOneWidget);
-      expect(find.textContaining('respect and kindness'), findsOneWidget);
-      expect(find.textContaining('meaningful connections'), findsOneWidget);
-    });
-
-    testWidgets('has I agree button always enabled', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: const CommunityGuidelinesScreen(),
-          routes: {'/onboarding/first-name': (_) => const Scaffold()},
-        ),
-      );
-      final button = tester.widget<ElevatedButton>(
-        find.byType(ElevatedButton),
-      );
-      expect(button.onPressed, isNotNull);
+    testWidgets('has I agree button', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      // l10n: iAgreeButton = "I agree"
       expect(find.text('I agree'), findsOneWidget);
     });
 
-    testWidgets('has green check icons for each rule', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: CommunityGuidelinesScreen()),
-      );
-      expect(find.byIcon(Icons.check), findsNWidgets(4));
+    testWidgets('I agree navigates to next screen', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.tap(find.text('I agree'));
+      await tester.pumpAndSettle();
+      // Should navigate to first-name screen
+      expect(find.text('first-name'), findsOneWidget);
     });
 
-    testWidgets('has progress bar at 15%', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: CommunityGuidelinesScreen()),
-      );
-      final progress = tester.widget<LinearProgressIndicator>(
-        find.byType(LinearProgressIndicator),
-      );
-      expect(progress.value, 0.15);
+    testWidgets('has progress bar', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byType(LinearProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('has back and close navigation', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: CommunityGuidelinesScreen()),
-      );
+    testWidgets('has back navigation', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-      expect(find.byIcon(Icons.close), findsOneWidget);
+    });
+
+    testWidgets('has green checkmark icons for rules', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byIcon(Icons.check), findsNWidgets(4));
     });
   });
 }

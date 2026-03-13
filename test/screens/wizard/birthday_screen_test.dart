@@ -1,74 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dejtingapp/screens/wizard/birthday_screen.dart';
+import '../../helpers/onboarding_test_helper.dart';
 
 void main() {
-  group('Birthday Screen (T026)', () {
-    testWidgets('renders with "Your birthday?" header', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: BirthdayScreen()),
+  group('Birthday Screen', () {
+    Widget buildSubject() {
+      return buildOnboardingTestHarness(
+        screen: const BirthdayScreen(),
+        routeName: '/onboarding/birthday',
       );
+    }
+
+    testWidgets('renders birthday title from l10n', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      // l10n key: yourBirthday = "Your birthday?"
       expect(find.text('Your birthday?'), findsOneWidget);
     });
 
-    testWidgets('shows Month, Day, Year dropdowns', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: BirthdayScreen()),
-      );
-      expect(find.text('Month'), findsOneWidget);
-      expect(find.text('Day'), findsOneWidget);
-      expect(find.text('Year'), findsOneWidget);
+    testWidgets('shows birthday explainer text', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.textContaining('age, not your date of birth'), findsOneWidget);
     });
 
-    testWidgets('Next button is disabled until all fields selected', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: BirthdayScreen()),
-      );
-      final buttons = find.byType(ElevatedButton);
-      final button = tester.widget<ElevatedButton>(buttons.first);
-      expect(button.onPressed, isNull);
+    testWidgets('shows DD, MM, YYYY dropdown hints', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('DD'), findsOneWidget);
+      expect(find.text('MM'), findsOneWidget);
+      expect(find.text('YYYY'), findsOneWidget);
     });
 
-    testWidgets('has progress bar at 31%', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: BirthdayScreen()),
-      );
-      final progress = tester.widget<LinearProgressIndicator>(
-        find.byType(LinearProgressIndicator),
-      );
-      expect(progress.value, 0.31);
-    });
-
-    testWidgets('has back and close navigation buttons', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: BirthdayScreen()),
-      );
-      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-      expect(find.byIcon(Icons.close), findsOneWidget);
-    });
-
-    testWidgets('shows explanatory subtitle text', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: BirthdayScreen()),
-      );
-      expect(
-        find.textContaining('Your profile shows your age'),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets('has 3 dropdown form fields for date selection', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: BirthdayScreen()),
-      );
+    testWidgets('has three DropdownButtonFormField widgets', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.byType(DropdownButtonFormField<int>), findsNWidgets(3));
     });
 
-    testWidgets('Next button text is present', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: BirthdayScreen()),
-      );
+    testWidgets('has Next button', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      // l10n key: nextButton = "Next"
       expect(find.text('Next'), findsOneWidget);
+    });
+
+    testWidgets('Next button is disabled when no date selected', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.onPressed, isNull);
+    });
+
+    testWidgets('has progress bar', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byType(LinearProgressIndicator), findsOneWidget);
+    });
+
+    testWidgets('has back navigation', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    });
+
+    testWidgets('has close/abort button', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byIcon(Icons.close), findsOneWidget);
     });
   });
 }

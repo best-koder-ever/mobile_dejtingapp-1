@@ -143,7 +143,7 @@ class PhotoService {
       }
       return null;
     } catch (e) {
-      print('Photo upload error: $e');
+      debugPrint('Photo upload error: $e');
       return null;
     }
   }
@@ -156,7 +156,7 @@ class PhotoService {
 
       return response.statusCode == 200 || response.statusCode == 204;
     } catch (e) {
-      print('Photo delete error: $e');
+      debugPrint('Photo delete error: $e');
       return false;
     }
   }
@@ -187,7 +187,7 @@ class MatchmakingService {
       }
       return [];
     } catch (e) {
-      print('Get profiles error: $e');
+      debugPrint('Get profiles error: $e');
       return [];
     }
   }
@@ -219,7 +219,7 @@ class MatchmakingService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('Swipe error: $e');
+      debugPrint('Swipe error: $e');
       return false;
     }
   }
@@ -245,7 +245,7 @@ class MatchmakingService {
       }
       return [];
     } catch (e) {
-      print('Get matches error: $e');
+      debugPrint('Get matches error: $e');
       return [];
     }
   }
@@ -275,7 +275,7 @@ class UserService {
       }
       return null;
     } catch (e) {
-      print('Get user profile error: $e');
+      debugPrint('Get user profile error: $e');
       return null;
     }
   }
@@ -302,7 +302,7 @@ class UserService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('Update user profile error: $e');
+      debugPrint('Update user profile error: $e');
       return false;
     }
   }

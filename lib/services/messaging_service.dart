@@ -136,7 +136,7 @@ class MessagingService {
     });
 
     if (kDebugMode) {
-      print('✅ MessagingService initialized (userId=$userId)');
+      debugPrint('✅ MessagingService initialized (userId=$userId)');
     }
   }
 
@@ -217,7 +217,7 @@ class MessagingService {
 
     if (_reconnectAttempt >= _maxReconnectAttempts) {
       if (kDebugMode) {
-        print('⚠️ Max reconnect attempts reached — falling back to REST polling');
+        debugPrint('⚠️ Max reconnect attempts reached — falling back to REST polling');
       }
       _startPollingFallback();
       return;
@@ -234,7 +234,7 @@ class MessagingService {
 
     _reconnectAttempt++;
     if (kDebugMode) {
-      print('🔄 Reconnect attempt $_reconnectAttempt in ${delay.inSeconds}s');
+      debugPrint('🔄 Reconnect attempt $_reconnectAttempt in ${delay.inSeconds}s');
     }
 
     _setConnectionState(ConnectionState.reconnecting);
@@ -270,7 +270,7 @@ class MessagingService {
     });
 
     if (kDebugMode) {
-      print('📡 REST polling fallback active');
+      debugPrint('📡 REST polling fallback active');
     }
   }
 
@@ -371,7 +371,7 @@ class MessagingService {
       final data = parameters[0] as Map<String, dynamic>;
       _typingController.add(data);
       if (kDebugMode) {
-        print('⌨️ TypingChanged: userId=${data['userId']} isTyping=${data['isTyping']}');
+        debugPrint('⌨️ TypingChanged: userId=${data['userId']} isTyping=${data['isTyping']}');
       }
     } catch (e) {
       if (kDebugMode) print('❌ _onTypingChanged error: $e');
@@ -481,7 +481,7 @@ class MessagingService {
     _pendingQueue.add(pending);
     _savePendingQueue();
     if (kDebugMode) {
-      print('📥 Queued offline: ${pending.content} '
+      debugPrint('📥 Queued offline: ${pending.content} '
           '(queue size: ${_pendingQueue.length})');
     }
   }
@@ -499,7 +499,7 @@ class MessagingService {
       if (pending.retryCount >= _maxRetries) {
         toRemove.add(pending.localId);
         if (kDebugMode) {
-          print('❌ Dropped after $_maxRetries retries: ${pending.content}');
+          debugPrint('❌ Dropped after $_maxRetries retries: ${pending.content}');
         }
         continue;
       }
@@ -541,7 +541,7 @@ class MessagingService {
       if (sent) {
         toRemove.add(pending.localId);
         if (kDebugMode) {
-          print('✅ Flushed queued message: ${pending.content}');
+          debugPrint('✅ Flushed queued message: ${pending.content}');
         }
       } else {
         pending.retryCount++;
@@ -553,7 +553,7 @@ class MessagingService {
     _isFlushing = false;
 
     if (_pendingQueue.isNotEmpty && kDebugMode) {
-      print('📥 ${_pendingQueue.length} messages still queued');
+      debugPrint('📥 ${_pendingQueue.length} messages still queued');
     }
   }
 
@@ -567,7 +567,7 @@ class MessagingService {
             .map((e) => PendingMessage.fromJson(e as Map<String, dynamic>))
             .toList();
         if (kDebugMode && _pendingQueue.isNotEmpty) {
-          print('📥 Restored ${_pendingQueue.length} pending messages from disk');
+          debugPrint('📥 Restored ${_pendingQueue.length} pending messages from disk');
         }
       }
     } catch (e) {
@@ -651,14 +651,14 @@ class MessagingService {
             .toList();
       } else {
         if (!_hasConnectionIssue && kDebugMode) {
-          print('❌ getConversations: ${response.statusCode}');
+          debugPrint('❌ getConversations: ${response.statusCode}');
         }
         _hasConnectionIssue = true;
         return [];
       }
     } catch (e) {
       if (!_hasConnectionIssue && kDebugMode) {
-        print('❌ getConversations error: $e');
+        debugPrint('❌ getConversations error: $e');
       }
       _hasConnectionIssue = true;
       return [];

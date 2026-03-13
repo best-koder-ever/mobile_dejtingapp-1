@@ -34,7 +34,7 @@ class CachedPhotoService {
     await _loadCacheMetadata();
     _initialized = true;
 
-    print('📸 CachedPhotoService initialized: ${_cacheDir.path}');
+    debugPrint('📸 CachedPhotoService initialized: ${_cacheDir.path}');
   }
 
   /// Upload photo with immediate local caching
@@ -56,11 +56,11 @@ class CachedPhotoService {
     await imageFile.copy(localCachePath);
     final localImageBytes = await imageFile.readAsBytes();
 
-    print('📱 Local photo cached for immediate display: $localCachePath');
+    debugPrint('📱 Local photo cached for immediate display: $localCachePath');
 
     try {
       // 2. Upload to server in background
-      print('⬆️ Starting background upload...');
+      debugPrint('⬆️ Starting background upload...');
       final uploadResult = await _photoService.uploadPhoto(
         imageFile: imageFile,
         authToken: authToken,
@@ -85,7 +85,7 @@ class CachedPhotoService {
               originalFileName: uploadResult.photo!.originalFileName,
             ));
 
-        print('✅ Photo uploaded & cached: ID ${uploadResult.photo!.id}');
+        debugPrint('✅ Photo uploaded & cached: ID ${uploadResult.photo!.id}');
 
         return CachedPhotoUploadResult(
           success: true,
@@ -96,7 +96,7 @@ class CachedPhotoService {
         );
       } else {
         // Upload failed, but we still have local image
-        print('⚠️ Upload failed, but local image available');
+        debugPrint('⚠️ Upload failed, but local image available');
         return CachedPhotoUploadResult(
           success: false,
           localImageBytes: localImageBytes,
@@ -106,7 +106,7 @@ class CachedPhotoService {
         );
       }
     } catch (e) {
-      print('❌ Upload error, but local image available: $e');
+      debugPrint('❌ Upload error, but local image available: $e');
       return CachedPhotoUploadResult(
         success: false,
         localImageBytes: localImageBytes,
@@ -132,7 +132,7 @@ class CachedPhotoService {
       );
 
       if (serverPhotos == null) {
-        print('❌ Failed to get user photos from server');
+        debugPrint('❌ Failed to get user photos from server');
         return null;
       }
 
@@ -151,13 +151,13 @@ class CachedPhotoService {
             await File(metadata!.localPath).exists()) {
           imageBytes = await File(metadata.localPath).readAsBytes();
           localPath = metadata.localPath;
-          print('📱 Using cached image for photo ${photo.id}');
+          debugPrint('📱 Using cached image for photo ${photo.id}');
         } else {
           // Download and cache
           imageBytes = await _downloadAndCachePhoto(photo, authToken);
           if (imageBytes != null) {
             localPath = await _getCachePathForPhoto(photo.id);
-            print('⬇️ Downloaded & cached photo ${photo.id}');
+            debugPrint('⬇️ Downloaded & cached photo ${photo.id}');
           }
         }
 
@@ -176,7 +176,7 @@ class CachedPhotoService {
         hasReachedPhotoLimit: serverPhotos.hasReachedPhotoLimit,
       );
     } catch (e) {
-      print('❌ Error getting cached user photos: $e');
+      debugPrint('❌ Error getting cached user photos: $e');
       return null;
     }
   }
@@ -214,7 +214,7 @@ class CachedPhotoService {
         return response;
       }
     } catch (e) {
-      print('❌ Failed to download photo ${photo.id}: $e');
+      debugPrint('❌ Failed to download photo ${photo.id}: $e');
     }
     return null;
   }
@@ -247,7 +247,7 @@ class CachedPhotoService {
     }
 
     await _saveCacheMetadataToFile();
-    print('🧹 Cleared ${keysToRemove.length} old cache entries');
+    debugPrint('🧹 Cleared ${keysToRemove.length} old cache entries');
   }
 
   /// Generate cache key from content
@@ -275,10 +275,10 @@ class CachedPhotoService {
           _cacheMetadata[entry.key] = PhotoCacheMetadata.fromJson(entry.value);
         }
 
-        print('📋 Loaded ${_cacheMetadata.length} cache metadata entries');
+        debugPrint('📋 Loaded ${_cacheMetadata.length} cache metadata entries');
       }
     } catch (e) {
-      print('⚠️ Failed to load cache metadata: $e');
+      debugPrint('⚠️ Failed to load cache metadata: $e');
     }
   }
 
@@ -302,7 +302,7 @@ class CachedPhotoService {
 
       await metadataFile.writeAsString(jsonEncode(data));
     } catch (e) {
-      print('❌ Failed to save cache metadata: $e');
+      debugPrint('❌ Failed to save cache metadata: $e');
     }
   }
 
@@ -355,7 +355,7 @@ extension PhotoServiceImageBytes on PhotoService {
         return response.bodyBytes;
       }
     } catch (e) {
-      print('❌ Failed to get photo bytes: $e');
+      debugPrint('❌ Failed to get photo bytes: $e');
     }
     return null;
   }

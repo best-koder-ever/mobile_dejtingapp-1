@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -73,18 +74,18 @@ class PhotoService {
         request.fields['Description'] = description;
       }
 
-      print('📤 Uploading photo: $resolvedFileName');
+      debugPrint('📤 Uploading photo: $resolvedFileName');
       if (imageFile != null) {
-        print('📤 File size: ${await imageFile.length()} bytes');
+        debugPrint('📤 File size: ${await imageFile.length()} bytes');
       } else if (imageBytes != null) {
-        print('📤 File size: ${imageBytes.lengthInBytes} bytes');
+        debugPrint('📤 File size: ${imageBytes.lengthInBytes} bytes');
       }
 
       final response = await request.send();
       final responseBody = await response.stream.bytesToString();
 
-      print('📥 Upload response: ${response.statusCode}');
-      print('📥 Response body: $responseBody');
+      debugPrint('📥 Upload response: ${response.statusCode}');
+      debugPrint('📥 Response body: $responseBody');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonData = json.decode(responseBody);
@@ -96,7 +97,7 @@ class PhotoService {
         );
       }
     } catch (e) {
-      print('❌ Photo upload error: $e');
+      debugPrint('❌ Photo upload error: $e');
       return PhotoUploadResult(
         success: false,
         errorMessage: 'Upload failed: $e',
@@ -122,11 +123,11 @@ class PhotoService {
         final jsonData = json.decode(response.body);
         return UserPhotoSummary.fromJson(jsonData);
       } else {
-        print('❌ Failed to get user photos: ${response.statusCode}');
+        debugPrint('❌ Failed to get user photos: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      print('❌ Error getting user photos: $e');
+      debugPrint('❌ Error getting user photos: $e');
       return null;
     }
   }
@@ -146,7 +147,7 @@ class PhotoService {
 
       return response.statusCode == 200 || response.statusCode == 204;
     } catch (e) {
-      print('❌ Error deleting photo: $e');
+      debugPrint('❌ Error deleting photo: $e');
       return false;
     }
   }
@@ -178,7 +179,7 @@ class PhotoService {
       }
       return null;
     } catch (e) {
-      print('❌ Error updating photo: $e');
+      debugPrint('❌ Error updating photo: $e');
       return null;
     }
   }
@@ -204,7 +205,7 @@ class PhotoService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('❌ Error reordering photos: $e');
+      debugPrint('❌ Error reordering photos: $e');
       return false;
     }
   }
@@ -219,7 +220,7 @@ class PhotoService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('❌ PhotoService health check failed: $e');
+      debugPrint('❌ PhotoService health check failed: $e');
       return false;
     }
   }

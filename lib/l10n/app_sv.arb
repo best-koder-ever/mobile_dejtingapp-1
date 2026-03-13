@@ -356,10 +356,169 @@
   "voicePromptTitle": "Röstmeddelande",
   "voicePromptInstruction": "Spela in en kort röstintro så dina matchningar kan höra din stämning",
   "voicePromptRecording": "Spelar in… tryck stopp när du är klar",
-  "voicePromptReview": "Lyssna på din inspelning och välj att spara eller spela in igen"
-,
+  "voicePromptReview": "Lyssna på din inspelning och välj att spara eller spela in igen",
   "nameNotAllowed": "Det namnet är inte tillåtet. Välj ett annat.",
   "@nameNotAllowed": {
     "description": "Error shown when user enters an offensive or blocked name"
+  },
+  "aboutMeCommunicationStyle": "Kommunikationsstil",
+  "@aboutMeCommunicationStyle": {
+    "description": "About me section: communication style"
+  },
+  "aboutMeEducationLevel": "Utbildningsnivå",
+  "@aboutMeEducationLevel": {
+    "description": "About me section: education level"
+  },
+  "aboutMeLoveLanguage": "Kärleksspråk",
+  "@aboutMeLoveLanguage": {
+    "description": "About me section: love language"
+  },
+  "readyToMatch": "Jag är redo att matcha",
+  "@readyToMatch": {
+    "description": "CTA button on welcome screen"
+  },
+  "signInButton": "Logga in",
+  "@signInButton": {
+    "description": "Sign in button text"
+  },
+  "welcomeBack": "Välkommen tillbaka",
+  "@welcomeBack": {
+    "description": "Welcome back greeting"
+  },
+  "signInWithPhoneDescription": "Logga in med telefonnumret du använde när du registrerade dig.",
+  "@signInWithPhoneDescription": {
+    "description": "Sign in screen description"
+  },
+  "accountNotFound": "Inget konto hittades med detta nummer. Gå tillbaka och tryck \"Jag är redo att matcha\" för att skapa ett.",
+  "@accountNotFound": {
+    "description": "Error when sign-in finds no account"
+  },
+  "ageRangeTitle": "Hur gammal är din ideala match?",
+  "@ageRangeTitle": {
+    "description": "Age range screen title"
+  },
+  "yearsOld": "år",
+  "@yearsOld": {
+    "description": "Age unit label"
+  },
+  "alwaysVisibleOnProfile": "Alltid synligt på profilen",
+  "@alwaysVisibleOnProfile": {
+    "description": "Visibility hint"
+  },
+  "editableInSettings": "Kan ändras i Inställningar",
+  "@editableInSettings": {
+    "description": "Editable hint"
+  },
+  "notVisibleOnProfile": "Inte synligt på profilen",
+  "@notVisibleOnProfile": {
+    "description": "Visibility hint"
+  },
+  "visibilityExplanation": "Alla som ser din profil kan se detta innehåll.",
+  "@visibilityExplanation": {
+    "description": "Visibility explanation text"
+  },
+  "interestCategoryFoodDrink": "Mat & dryck",
+  "@interestCategoryFoodDrink": {
+    "description": "Interest category"
+  },
+  "interestCategoryGoingOut": "Uteliv",
+  "@interestCategoryGoingOut": {
+    "description": "Interest category"
+  },
+  "interestCategoryMusic": "Musik",
+  "@interestCategoryMusic": {
+    "description": "Interest category"
+  },
+  "interestCategoryOutdoors": "Utomhus & äventyr",
+  "@interestCategoryOutdoors": {
+    "description": "Interest category"
+  },
+  "interestCategoryStayingIn": "Hemma",
+  "@interestCategoryStayingIn": {
+    "description": "Interest category"
+  },
+  "interestCategoryTvMovies": "TV & film",
+  "@interestCategoryTvMovies": {
+    "description": "Interest category"
+  },
+  "interestCategoryValues": "Värderingar & engagemang",
+  "@interestCategoryValues": {
+    "description": "Interest category"
+  },
+  "interestsSelectedCount": "{count} / {max} valda",
+  "@interestsSelectedCount": {
+    "description": "Selected interests counter",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "lifestyleExerciseTitle": "Tränar du?",
+  "@lifestyleExerciseTitle": {
+    "description": "Lifestyle question"
+  },
+  "lifestylePetsTitle": "Har du husdjur?",
+  "@lifestylePetsTitle": {
+    "description": "Lifestyle question"
+  },
+  "lifestyleSmokingTitle": "Hur ofta röker du?",
+  "@lifestyleSmokingTitle": {
+    "description": "Lifestyle question"
+  },
+  "orientationAsexualDesc": "Liten eller ingen sexuell attraktion",
+  "@orientationAsexualDesc": {
+    "description": "Orientation description"
+  },
+  "orientationBisexualDesc": "Attraherad av mer än ett kön",
+  "@orientationBisexualDesc": {
+    "description": "Orientation description"
+  },
+  "orientationDemisexualDesc": "Attraktion efter känslomässig koppling",
+  "@orientationDemisexualDesc": {
+    "description": "Orientation description"
+  },
+  "orientationGayDesc": "Attraherad av samma kön",
+  "@orientationGayDesc": {
+    "description": "Orientation description"
+  },
+  "orientationLesbianDesc": "Kvinnor attraherade av kvinnor",
+  "@orientationLesbianDesc": {
+    "description": "Orientation description"
+  },
+  "orientationPansexualDesc": "Attraktion oavsett kön",
+  "@orientationPansexualDesc": {
+    "description": "Orientation description"
+  },
+  "orientationQueerDesc": "Inte heterosexuell eller cis",
+  "@orientationQueerDesc": {
+    "description": "Orientation description"
+  },
+  "orientationQuestioningDesc": "Utforskar eller osäker",
+  "@orientationQuestioningDesc": {
+    "description": "Orientation description"
+  },
+  "orientationStraightDesc": "Attraherad av det motsatta könet",
+  "@orientationStraightDesc": {
+    "description": "Orientation description"
+  },
+  "messageWarningBody": "Det här meddelandet kan vara sårande. Vill du redigera det?",
+  "@messageWarningBody": {
+    "description": "Profanity nudge body"
+  },
+  "messageWarningEdit": "Redigera meddelande",
+  "@messageWarningEdit": {
+    "description": "Profanity nudge edit button"
+  },
+  "messageWarningSendAnyway": "Skicka ändå",
+  "@messageWarningSendAnyway": {
+    "description": "Profanity nudge send button"
+  },
+  "messageWarningTitle": "Är du säker?",
+  "@messageWarningTitle": {
+    "description": "Profanity nudge dialog title"
   }
 }

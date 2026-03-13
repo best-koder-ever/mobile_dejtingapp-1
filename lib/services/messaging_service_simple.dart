@@ -38,7 +38,7 @@ class MessagingService {
     _startPolling();
 
     if (kDebugMode) {
-      print('✅ Messaging service initialized');
+      debugPrint('✅ Messaging service initialized');
     }
   }
 
@@ -56,7 +56,7 @@ class MessagingService {
       {MessageType type = MessageType.text}) async {
     if (_currentUserId == null || _authToken == null) {
       if (kDebugMode) {
-        print('❌ Cannot send message: Not authenticated');
+        debugPrint('❌ Cannot send message: Not authenticated');
       }
       return false;
     }
@@ -108,7 +108,7 @@ class MessagingService {
         }
 
         if (kDebugMode) {
-          print('📤 Message sent successfully: $content');
+          debugPrint('📤 Message sent successfully: $content');
         }
 
         return true;
@@ -117,13 +117,13 @@ class MessagingService {
         _conversationCache[conversationId]?.remove(tempMessage);
 
         if (kDebugMode) {
-          print('❌ Failed to send message: ${response.statusCode}');
+          debugPrint('❌ Failed to send message: ${response.statusCode}');
         }
         return false;
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Failed to send message: $e');
+        debugPrint('❌ Failed to send message: $e');
       }
       return false;
     }
@@ -154,13 +154,13 @@ class MessagingService {
         return messages;
       } else {
         if (kDebugMode) {
-          print('❌ Failed to load conversation: ${response.statusCode}');
+          debugPrint('❌ Failed to load conversation: ${response.statusCode}');
         }
         return [];
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ Error loading conversation: $e');
+        debugPrint('❌ Error loading conversation: $e');
       }
       return [];
     }
@@ -185,14 +185,14 @@ class MessagingService {
             .toList();
       } else {
         if (!_hasConnectionIssue && kDebugMode) {
-          print('❌ Failed to load conversations: ${response.statusCode}');
+          debugPrint('❌ Failed to load conversations: ${response.statusCode}');
         }
         _hasConnectionIssue = true;
         return [];
       }
     } catch (e) {
       if (!_hasConnectionIssue && kDebugMode) {
-        print('❌ Error loading conversations: $e');
+        debugPrint('❌ Error loading conversations: $e');
       }
       _hasConnectionIssue = true;
       return [];
@@ -225,7 +225,7 @@ class MessagingService {
       }
     } catch (e) {
       if (!_hasConnectionIssue && kDebugMode) {
-        print('❌ Error marking message as read: $e');
+        debugPrint('❌ Error marking message as read: $e');
       }
       _hasConnectionIssue = true;
     }

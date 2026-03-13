@@ -1176,125 +1176,126 @@ class AppLocalizationsSv extends AppLocalizations {
       'Lyssna på din inspelning och välj att spara eller spela in igen';
 
   @override
-  String get readyToMatch => 'I\'m ready to match';
+  String get readyToMatch => 'Jag är redo att matcha';
 
   @override
-  String get signInButton => 'Sign in';
+  String get signInButton => 'Logga in';
 
   @override
-  String get welcomeBack => 'Welcome back';
+  String get welcomeBack => 'Välkommen tillbaka';
 
   @override
   String get signInWithPhoneDescription =>
-      'Sign in with the phone number you used when you registered.';
+      'Logga in med telefonnumret du använde när du registrerade dig.';
 
   @override
   String get accountNotFound =>
-      'No account found with this number. Go back and tap \"I\'m ready to match\" to create one.';
+      'Inget konto hittades med detta nummer. Gå tillbaka och tryck \"Jag är redo att matcha\" för att skapa ett.';
 
   @override
-  String get alwaysVisibleOnProfile => 'Always visible on profile';
+  String get alwaysVisibleOnProfile => 'Alltid synligt på profilen';
 
   @override
   String get visibilityExplanation =>
-      'Everyone who views your profile can see this content.';
+      'Alla som ser din profil kan se detta innehåll.';
 
   @override
-  String get ageRangeTitle => 'How old is your ideal match?';
+  String get ageRangeTitle => 'Hur gammal är din ideala match?';
 
   @override
-  String get yearsOld => 'years old';
+  String get yearsOld => 'år';
 
   @override
-  String get editableInSettings => 'Editable in Settings';
+  String get editableInSettings => 'Kan ändras i Inställningar';
 
   @override
-  String get notVisibleOnProfile => 'Not visible on profile';
+  String get notVisibleOnProfile => 'Inte synligt på profilen';
 
   @override
-  String get orientationStraightDesc => 'Attracted to the opposite gender';
+  String get orientationStraightDesc => 'Attraherad av det motsatta könet';
 
   @override
-  String get orientationGayDesc => 'Attracted to the same gender';
+  String get orientationGayDesc => 'Attraherad av samma kön';
 
   @override
-  String get orientationLesbianDesc => 'Women attracted to women';
+  String get orientationLesbianDesc => 'Kvinnor attraherade av kvinnor';
 
   @override
-  String get orientationBisexualDesc => 'Attracted to more than one gender';
+  String get orientationBisexualDesc => 'Attraherad av mer än ett kön';
 
   @override
-  String get orientationAsexualDesc => 'Little or no sexual attraction';
+  String get orientationAsexualDesc => 'Liten eller ingen sexuell attraktion';
 
   @override
-  String get orientationDemisexualDesc => 'Attraction after emotional bond';
+  String get orientationDemisexualDesc =>
+      'Attraktion efter känslomässig koppling';
 
   @override
-  String get orientationPansexualDesc => 'Attraction regardless of gender';
+  String get orientationPansexualDesc => 'Attraktion oavsett kön';
 
   @override
-  String get orientationQueerDesc => 'Not heterosexual or cisgender';
+  String get orientationQueerDesc => 'Inte heterosexuell eller cis';
 
   @override
-  String get orientationQuestioningDesc => 'Exploring or unsure';
+  String get orientationQuestioningDesc => 'Utforskar eller osäker';
 
   @override
-  String get lifestyleSmokingTitle => 'How often do you smoke?';
+  String get lifestyleSmokingTitle => 'Hur ofta röker du?';
 
   @override
-  String get lifestyleExerciseTitle => 'Do you exercise?';
+  String get lifestyleExerciseTitle => 'Tränar du?';
 
   @override
-  String get lifestylePetsTitle => 'Do you have any pets?';
+  String get lifestylePetsTitle => 'Har du husdjur?';
 
   @override
-  String get aboutMeCommunicationStyle => 'Communication style';
+  String get aboutMeCommunicationStyle => 'Kommunikationsstil';
 
   @override
-  String get aboutMeLoveLanguage => 'Love language';
+  String get aboutMeLoveLanguage => 'Kärleksspråk';
 
   @override
-  String get aboutMeEducationLevel => 'Education level';
+  String get aboutMeEducationLevel => 'Utbildningsnivå';
 
   @override
-  String get interestCategoryOutdoors => 'Outdoors & adventure';
+  String get interestCategoryOutdoors => 'Utomhus & äventyr';
 
   @override
-  String get interestCategoryValues => 'Values & causes';
+  String get interestCategoryValues => 'Värderingar & engagemang';
 
   @override
-  String get interestCategoryStayingIn => 'Staying in';
+  String get interestCategoryStayingIn => 'Hemma';
 
   @override
-  String get interestCategoryTvMovies => 'TV & movies';
+  String get interestCategoryTvMovies => 'TV & film';
 
   @override
-  String get interestCategoryMusic => 'Music';
+  String get interestCategoryMusic => 'Musik';
 
   @override
-  String get interestCategoryFoodDrink => 'Food & drink';
+  String get interestCategoryFoodDrink => 'Mat & dryck';
 
   @override
-  String get interestCategoryGoingOut => 'Going out';
+  String get interestCategoryGoingOut => 'Uteliv';
 
   @override
   String interestsSelectedCount(int count, int max) {
-    return '$count / $max selected';
+    return '$count / $max valda';
   }
 
   @override
   String get nameNotAllowed => 'Det namnet är inte tillåtet. Välj ett annat.';
 
   @override
-  String get messageWarningTitle => 'Are you sure?';
+  String get messageWarningTitle => 'Är du säker?';
 
   @override
   String get messageWarningBody =>
-      'This message may be hurtful. Would you like to edit it?';
+      'Det här meddelandet kan vara sårande. Vill du redigera det?';
 
   @override
-  String get messageWarningEdit => 'Edit message';
+  String get messageWarningEdit => 'Redigera meddelande';
 
   @override
-  String get messageWarningSendAnyway => 'Send anyway';
+  String get messageWarningSendAnyway => 'Skicka ändå';
 }

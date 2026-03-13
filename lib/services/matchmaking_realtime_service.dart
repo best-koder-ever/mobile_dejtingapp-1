@@ -139,7 +139,7 @@ class MatchmakingRealtimeService {
 
     if (_reconnectAttempt >= _maxReconnectAttempts) {
       if (kDebugMode) {
-        print('⚠️ MatchmakingHub max reconnect attempts reached');
+        debugPrint('⚠️ MatchmakingHub max reconnect attempts reached');
       }
       // Keep trying at long intervals
       _reconnectTimer = Timer.periodic(const Duration(seconds: 60), (_) {
@@ -161,7 +161,7 @@ class MatchmakingRealtimeService {
 
     _reconnectAttempt++;
     if (kDebugMode) {
-      print('🔄 MatchmakingHub reconnect #$_reconnectAttempt in ${delay.inSeconds}s');
+      debugPrint('🔄 MatchmakingHub reconnect #$_reconnectAttempt in ${delay.inSeconds}s');
     }
 
     _reconnectTimer = Timer(delay, () {
@@ -180,7 +180,7 @@ class MatchmakingRealtimeService {
       final notification = MatchNotification.fromJson(data);
       _matchController.add(notification);
       if (kDebugMode) {
-        print('🎉 MatchCreated: matchId=${notification.matchId} '
+        debugPrint('🎉 MatchCreated: matchId=${notification.matchId} '
             'with=${notification.matchedWithUserId}');
       }
     } catch (e) {
@@ -190,7 +190,7 @@ class MatchmakingRealtimeService {
 
   void _onSubscribed(List<Object?>? parameters) {
     if (kDebugMode) {
-      print('✅ Subscribed to match notifications');
+      debugPrint('✅ Subscribed to match notifications');
     }
   }
 
