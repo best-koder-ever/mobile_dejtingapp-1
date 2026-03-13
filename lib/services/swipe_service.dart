@@ -38,7 +38,7 @@ class SwipeService {
           return null;
         }
 
-        final uri = Uri.parse('${ApiUrls.gateway}/matches/swipe');
+        final uri = Uri.parse('${ApiUrls.gateway}/api/swipes');
         final response = await http.post(
           uri,
           headers: {
@@ -115,7 +115,7 @@ class SwipeService {
         return null;
       }
 
-      final uri = Uri.parse('${ApiUrls.gateway}/matches/swipe/batch');
+      final uri = Uri.parse('${ApiUrls.gateway}/api/swipes/batch');
       
       // Add idempotency keys to each swipe if not present
       final swipesWithKeys = swipes.map((s) {
