@@ -398,6 +398,7 @@ class Message {
   final bool isRead;
   final MessageType type;
   final DateTime? readAt;
+  final String? moderationFlag;
 
   Message({
     required this.id,
@@ -408,6 +409,7 @@ class Message {
     this.isRead = false,
     this.type = MessageType.text,
     this.readAt,
+    this.moderationFlag,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
@@ -421,6 +423,7 @@ class Message {
       isRead: json['isRead'] ?? false,
       type: MessageType.values[json['type'] ?? 0],
       readAt: json['readAt'] != null ? DateTime.tryParse(json['readAt']) : null,
+      moderationFlag: json['moderationFlag'] as String?,
     );
   }
 
@@ -434,6 +437,7 @@ class Message {
       'isRead': isRead,
       'type': type.index,
       if (readAt != null) 'readAt': readAt!.toIso8601String(),
+      if (moderationFlag != null) 'moderationFlag': moderationFlag,
     };
   }
 
@@ -446,6 +450,7 @@ class Message {
     bool? isRead,
     MessageType? type,
     DateTime? readAt,
+    String? moderationFlag,
   }) {
     return Message(
       id: id ?? this.id,
@@ -456,6 +461,7 @@ class Message {
       isRead: isRead ?? this.isRead,
       type: type ?? this.type,
       readAt: readAt ?? this.readAt,
+      moderationFlag: moderationFlag ?? this.moderationFlag,
     );
   }
 }
