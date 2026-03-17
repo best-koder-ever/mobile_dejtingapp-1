@@ -591,6 +591,7 @@ typedef MemberProfile = UserProfile;
 class MatchSummary {
   final String matchId;
   final String matchedUserId;
+  final String? keycloakUserId;
   final String displayName;
   final String? photoUrl;
   final DateTime matchedAt;
@@ -599,6 +600,7 @@ class MatchSummary {
   MatchSummary({
     required this.matchId,
     required this.matchedUserId,
+    this.keycloakUserId,
     required this.displayName,
     this.photoUrl,
     required this.matchedAt,
@@ -608,6 +610,7 @@ class MatchSummary {
   factory MatchSummary.fromJson(Map<String, dynamic> json) {
     return MatchSummary(
       matchId: (json['matchId'] ?? json['id'] ?? '').toString(),
+      keycloakUserId: json['keycloakUserId']?.toString(),
       matchedUserId: (json['matchedUserId'] ?? json['userId'] ?? json['otherUserId'] ?? '').toString(),
       displayName: json['displayName'] ?? json['name'] ?? 'Unknown',
       photoUrl: json['photoUrl'] ?? json['primaryPhotoUrl'],

@@ -41,9 +41,9 @@ class _ProfileHubScreenState extends State<ProfileHubScreen>
   Map<String, String>? _imageHeaders;
 
   // Spark / Spotlight balances (persisted later via backend)
-  int _sparksRemaining = 1; // Free users get 1/week
+  final int _sparksRemaining = 1; // Free users get 1/week
   int _spotlightMinutes = 0;
-  bool _isPlusSubscriber = false;
+  final bool _isPlusSubscriber = false;
 
   // Services
   final _verificationService = VerificationService();

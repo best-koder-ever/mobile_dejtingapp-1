@@ -161,7 +161,7 @@ class _AccountConsentScreenState extends State<AccountConsentScreen> {
                           // Profile photo
                           CircleAvatar(
                             radius: 24,
-                            backgroundColor: coralColor.withOpacity(0.1),
+                            backgroundColor: coralColor.withValues(alpha: 0.1),
                             backgroundImage: widget.userPhotoUrl != null
                                 ? NetworkImage(widget.userPhotoUrl!)
                                 : null,
@@ -268,7 +268,7 @@ class _AccountConsentScreenState extends State<AccountConsentScreen> {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, -2),
                   ),

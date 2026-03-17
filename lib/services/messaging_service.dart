@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
 import '../backend_url.dart';
+import '../config/environment.dart';
 import '../models.dart';
 
 /// Connection state for the messaging service.
@@ -33,8 +34,8 @@ class PendingMessage {
 
   Map<String, dynamic> toJson() => {
         'localId': localId,
-        'receiverId': receiverId,
-        'content': content,
+        'recipientUserId': receiverId,
+        'text': content,
         'type': type.index,
         'createdAt': createdAt.toIso8601String(),
         'retryCount': retryCount,
@@ -54,8 +55,14 @@ class PendingMessage {
 ///
 /// Implements T044: offline queue + reconnection handling for Flutter messaging.
 class MessagingService {
-  static String get baseUrl => ApiUrls.messagingService;
-  static String get hubUrl => '${ApiUrls.messagingService}/messagingHub';
+  /// In dev, connect directly to messaging-service for speed.
+  /// In prod, route through the YARP gateway.
+  static String get baseUrl => EnvironmentConfig.isDevelopment
+      ? ApiUrls.messagingService
+      : ApiUrls.gateway;
+  static String get hubUrl => EnvironmentConfig.isDevelopment
+      ? '${ApiUrls.messagingService}/messagingHub'
+      : '${ApiUrls.gateway}/hubs/messages';
 
   // --- Singleton ---
   static final MessagingService _instance = MessagingService._internal();
@@ -441,15 +448,17 @@ class MessagingService {
               'Content-Type': 'application/json',
             },
             body: json.encode({
-              'receiverId': receiverId,
-              'content': content,
+              'recipientUserId': receiverId,
+              'text': content,
               'type': type.index,
             }),
           )
           .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final confirmed = Message.fromJson(json.decode(response.body));
+        final responseBody = json.decode(response.body);
+        final msgData = responseBody is Map && responseBody.containsKey('data') ? responseBody['data'] : responseBody;
+        final confirmed = Message.fromJson(msgData);
         // Replace optimistic with confirmed
         final idx =
             _conversationCache[convId]!.indexWhere((m) => m.id == localId);
@@ -613,7 +622,8 @@ class MessagingService {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> messagesJson = json.decode(response.body);
+        final decodedConv = json.decode(response.body);
+        final List<dynamic> messagesJson = decodedConv is Map && decodedConv.containsKey('data') ? List<dynamic>.from(decodedConv['data'] ?? []) : (decodedConv is List ? decodedConv : []);
         final messages =
             messagesJson.map((j) => Message.fromJson(j)).toList();
 
@@ -644,7 +654,8 @@ class MessagingService {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> list = json.decode(response.body);
+        final decodedConvs = json.decode(response.body);
+        final List<dynamic> list = decodedConvs is Map && decodedConvs.containsKey('data') ? List<dynamic>.from(decodedConvs['data'] ?? []) : (decodedConvs is List ? decodedConvs : []);
         _hasConnectionIssue = false;
         return list
             .map((j) => ConversationSummary.fromJson(j))

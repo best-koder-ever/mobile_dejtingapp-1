@@ -28,6 +28,7 @@ import 'edit_profile_screen.dart';
 import 'services/api_service.dart';
 import 'config/environment.dart';
 import 'config/dev_mode.dart';
+import 'services/dev_auto_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -58,7 +59,10 @@ Future<void> main() async {
   final appState = AppState();
   await appState.initialize();
 
-  // No auto-login — always show login screen with pre-filled credentials
+  // Auto-login in dev mode — get Keycloak tokens via Admin API, zero taps
+  if (DevMode.enabled) {
+    await DevAutoLogin.ensureDemoSession();
+  }
   if (kDebugMode) {
     debugPrint('👤 Session: ${appState.hasValidAuthSession() ? "VALID" : "NONE"}');
   }

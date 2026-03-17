@@ -88,14 +88,15 @@ class MessagingService {
           'Content-Type': 'application/json',
         },
         body: json.encode({
-          'receiverId': receiverId,
-          'content': content,
+          'recipientUserId': receiverId,
+          'text': content,
           'type': type.index,
         }),
       );
 
-      if (response.statusCode == 200) {
-        final messageData = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseBody = json.decode(response.body);
+        final messageData = responseBody is Map && responseBody.containsKey('data') ? responseBody['data'] : responseBody;
         final confirmedMessage = Message.fromJson(messageData);
 
         // Update cache with confirmed message
@@ -142,8 +143,9 @@ class MessagingService {
         },
       );
 
-      if (response.statusCode == 200) {
-        final List<dynamic> messagesJson = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decodedMsgs = json.decode(response.body);
+        final List<dynamic> messagesJson = decodedMsgs is Map && decodedMsgs.containsKey('data') ? List<dynamic>.from(decodedMsgs['data'] ?? []) : (decodedMsgs is List ? decodedMsgs : []);
         final messages =
             messagesJson.map((json) => Message.fromJson(json)).toList();
 
@@ -177,8 +179,9 @@ class MessagingService {
         },
       );
 
-      if (response.statusCode == 200) {
-        final List<dynamic> conversationsJson = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decoded = json.decode(response.body);
+        final List<dynamic> conversationsJson = decoded is Map && decoded.containsKey('data') ? List<dynamic>.from(decoded['data'] ?? []) : (decoded is List ? decoded : []);
         _hasConnectionIssue = false;
         return conversationsJson
             .map((json) => ConversationSummary.fromJson(json))

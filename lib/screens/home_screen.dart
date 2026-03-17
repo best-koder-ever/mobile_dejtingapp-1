@@ -314,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         children: [
           ListView(
             controller: _scrollController,
-            padding: const EdgeInsets.only(bottom: 100),
+            padding: const EdgeInsets.only(bottom: 140),
             children: [
               // Hero photo (first photo)
               _buildHeroPhoto(
@@ -333,7 +333,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           Positioned(
             left: 0, right: 0, bottom: 0,
-            child: _buildActionBar(),
+            child: SafeArea(
+              top: false,
+              child: _buildActionBar(),
+            ),
           ),
         ],
       ),

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 
 /// DevMode feature flag — enables skip/auto-fill buttons on every onboarding screen.
 /// Active only in debug builds + development environment.
@@ -8,7 +7,7 @@ class DevMode {
 
   /// Master toggle. True in debug builds by default.
   /// Set to false to test "real user" flow even in debug.
-  static bool enabled = kDebugMode;
+  static bool enabled = true; // Force dev mode for testing
 
   /// Fake data for auto-filling onboarding screens
   static const String fakeName = 'Test User';

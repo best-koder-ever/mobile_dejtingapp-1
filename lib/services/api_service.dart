@@ -192,38 +192,6 @@ class MatchmakingService {
     }
   }
 
-  static Future<bool> swipeProfile(
-    String userId,
-    String targetUserId,
-    bool isLike,
-  ) async {
-    try {
-      final token = await AppState().getOrRefreshAuthToken();
-      if (token == null) {
-        debugPrint('Swipe aborted: no access token');
-        return false;
-      }
-
-      final response = await http.post(
-        Uri.parse('$baseUrl/api/matchmaking/swipe'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: json.encode({
-          'userId': userId,
-          'targetUserId': targetUserId,
-          'isLike': isLike,
-        }),
-      );
-
-      return response.statusCode == 200;
-    } catch (e) {
-      debugPrint('Swipe error: $e');
-      return false;
-    }
-  }
-
   static Future<List<Map<String, dynamic>>> getMatches(String userId) async {
     try {
       final token = await AppState().getOrRefreshAuthToken();
@@ -322,6 +290,7 @@ class AppState {
   static const _userIdKey = 'userId';
   static const _userProfileKey = 'userProfile';
   static const _onboardingCompleteKey = 'onboardingComplete';
+  static const _profileIdKey = 'profileId';
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
@@ -334,8 +303,10 @@ class AppState {
   Map<String, dynamic>? _userProfile;
   bool _initialized = false;
   bool _onboardingComplete = false;
+  int? _profileId;
 
   String? get userId => _userId;
+  int? get profileId => _profileId;
   String? get authToken => _accessToken;
   String? get refreshToken => _refreshToken;
   Map<String, dynamic>? get userProfile => _userProfile;
@@ -390,6 +361,11 @@ class AppState {
 
     _onboardingComplete =
         (await _storage.read(key: _onboardingCompleteKey)) == 'true';
+
+    if (_profileId == null) {
+      final storedId = await _storage.read(key: _profileIdKey);
+      if (storedId != null) _profileId = int.tryParse(storedId);
+    }
 
     _initialized = true;
   }
@@ -480,11 +456,13 @@ class AppState {
 
     _userId = null;
     _userProfile = null;
+    _profileId = null;
     _initialized = false;
 
     await Future.wait([
       _storage.delete(key: _userIdKey),
       _storage.delete(key: _userProfileKey),
+      _storage.delete(key: _profileIdKey),
     ]);
 
     await _clearTokenStorage();
@@ -494,6 +472,43 @@ class AppState {
   Future<void> updateProfile(Map<String, dynamic> profile) async {
     _userProfile = profile;
     await _storage.write(key: _userProfileKey, value: json.encode(profile));
+  }
+
+  /// Returns the backend integer profile ID, resolving via /api/profiles/me.
+  /// Cached in secure storage. Matchmaking/swipe backends need this int, not UUID.
+  Future<int?> getOrResolveProfileId() async {
+    if (_profileId != null) return _profileId;
+    try {
+      final token = await getOrRefreshAuthToken();
+      if (token == null) {
+        debugPrint('\u26a0\ufe0f getOrResolveProfileId: no auth token');
+        return null;
+      }
+      final url = '${UserService.baseUrl}/api/profiles/me';
+      debugPrint('\ud83d\udd0d getOrResolveProfileId: calling $url');
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      debugPrint('\ud83d\udd0d getOrResolveProfileId: status=${response.statusCode}');
+      if (response.statusCode != 200) return null;
+      final body = json.decode(response.body) as Map<String, dynamic>;
+      final data = body['data'] as Map<String, dynamic>? ?? body;
+      final id = data['id'];
+      if (id is int) {
+        _profileId = id;
+      } else if (id != null) {
+        _profileId = int.tryParse(id.toString());
+      }
+      if (_profileId != null) {
+        await _storage.write(key: _profileIdKey, value: _profileId.toString());
+        debugPrint('\u2705 Resolved profileId=$_profileId for userId=$_userId');
+      }
+      return _profileId;
+    } catch (e) {
+      debugPrint('\u26a0\ufe0f Failed to resolve profileId: $e');
+      return null;
+    }
   }
 
   Future<void> _saveTokens({

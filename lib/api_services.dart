@@ -1,7 +1,11 @@
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'models.dart';
 import 'services/api_service.dart' as session;
 import 'services/auth_session_manager.dart';
 import 'services/swipe_service.dart';
+import 'backend_url.dart';
 
 class AuthApiService {
   Future<String> login({
@@ -52,7 +56,7 @@ class AuthApiService {
 }
 
 class UserApiService {
-  /// Create a user profile. Accepts a UserProfile or Map<String, dynamic>.
+  /// Create a user profile. Accepts a [UserProfile] or `Map<String, dynamic>`.
   Future<UserProfile> createProfile(dynamic payload) async {
     final Map<String, dynamic> data =
         payload is UserProfile ? payload.toJson() : payload as Map<String, dynamic>;
@@ -74,7 +78,7 @@ class UserApiService {
     return UserProfile.fromJson(data);
   }
 
-  /// Update a user profile. Accepts a UserProfile or Map<String, dynamic>.
+  /// Update a user profile. Accepts a [UserProfile] or `Map<String, dynamic>`.
   Future<UserProfile> updateProfile(dynamic payload) async {
     final Map<String, dynamic> data =
         payload is UserProfile ? payload.toJson() : payload as Map<String, dynamic>;
@@ -110,9 +114,13 @@ class MatchmakingApiService {
     int page = 1,
     int pageSize = 20,
   }) async {
-    final userId = session.AppState().userId;
-    if (userId == null) return [];
-    final rawList = await session.MatchmakingService.getProfiles(userId);
+    // Matchmaking backend needs the integer profile ID, not Keycloak UUID
+    final profileId = await session.AppState().getOrResolveProfileId();
+    debugPrint('🔍 getCandidates: profileId=$profileId');
+    if (profileId == null) { debugPrint('❌ getCandidates: profileId is null, returning []'); return []; }
+    debugPrint('🔍 getCandidates: calling getProfiles($profileId)');
+    final rawList = await session.MatchmakingService.getProfiles(profileId.toString());
+    debugPrint('🔍 getCandidates: got ${rawList.length} raw items');
     return rawList.map((m) => MatchCandidate.fromJson(m)).toList();
   }
 
@@ -129,12 +137,98 @@ class MatchmakingApiService {
     );
   }
 
-  /// Get the current user's matches.
+  /// Get the current user's matches, enriched with names/photos from UserService.
   Future<List<MatchSummary>> getMatches() async {
-    final userId = session.AppState().userId;
-    if (userId == null) return [];
-    final rawList = await session.MatchmakingService.getMatches(userId);
-    return rawList.map((m) => MatchSummary.fromJson(m)).toList();
+    // Matchmaking backend needs the integer profile ID, not Keycloak UUID
+    final profileId = await session.AppState().getOrResolveProfileId();
+    if (profileId == null) return [];
+    final rawList = await session.MatchmakingService.getMatches(profileId.toString());
+
+    // Enrich match data with names/photos from UserService demo profiles
+    Map<int, Map<String, dynamic>> profileLookup = {};
+    try {
+      final token = await session.AppState().getOrRefreshAuthToken();
+      if (token != null) {
+        final resp = await http.post(
+          Uri.parse('${session.UserService.baseUrl}/api/demo/search'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: '{}',
+        );
+        if (resp.statusCode == 200) {
+          final body = json.decode(resp.body);
+          final List<dynamic> profiles = body['results'] ?? body['data']?['results'] ?? [];
+          for (final p in profiles) {
+            if (p is Map<String, dynamic> && p['id'] != null) {
+              profileLookup[p['id'] as int] = p;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Match enrichment failed (non-fatal): $e');
+    }
+
+
+    // Fetch ProfileId -> Keycloak UUID mappings from SwipeService
+    Map<int, String> keycloakIdLookup = {};
+    try {
+      final token = await session.AppState().getOrRefreshAuthToken();
+      if (token != null) {
+        final mappingResp = await http.get(
+          Uri.parse('${ApiUrls.swipeService}/api/Swipes/user-mappings'),
+          headers: {'Authorization': 'Bearer $token'},
+        );
+        if (mappingResp.statusCode == 200) {
+          final mappingBody = json.decode(mappingResp.body);
+          final List<dynamic> mappings = mappingBody['data'] ?? mappingBody;
+          for (final mapping in mappings) {
+            if (mapping is Map<String, dynamic>) {
+              final pid = mapping['profileId'];
+              final kcId = mapping['keycloakUserId']?.toString();
+              if (pid != null && kcId != null) {
+                keycloakIdLookup[pid is int ? pid : int.parse(pid.toString())] = kcId;
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('User mapping fetch failed (non-fatal): $e');
+    }
+
+    final enriched = rawList.map((m) {
+      final matchedId = m['matchedUserId'];
+      final int? matchedIdInt = matchedId is int ? matchedId : int.tryParse(matchedId.toString());
+      final found = matchedIdInt != null && profileLookup.containsKey(matchedIdInt);
+      if (found) {
+        final p = profileLookup[matchedIdInt]!;
+        m['displayName'] = p['name'] ?? p['firstName'] ?? m['displayName'];
+        m['name'] = p['name'] ?? p['firstName'] ?? m['name'];
+        m['photoUrl'] = p['primaryPhotoUrl'] ?? p['photoUrl'] ?? m['photoUrl'];
+        m['primaryPhotoUrl'] = p['primaryPhotoUrl'] ?? m['primaryPhotoUrl'];
+      } else {
+        // Fallback: use city + occupation from matchmaking data if available
+        m['displayName'] = m['displayName'] ?? 'Match #$matchedIdInt';
+        m['name'] = m['name'] ?? m['displayName'];
+      }
+      // Inject Keycloak UUID from mapping
+      if (matchedIdInt != null && keycloakIdLookup.containsKey(matchedIdInt)) {
+        m['keycloakUserId'] = keycloakIdLookup[matchedIdInt];
+      }
+      return MatchSummary.fromJson(m);
+    }).toList();
+    // Sort: enriched (with real names) first, then unknowns
+    enriched.sort((a, b) {
+      final aReal = !a.displayName.startsWith('Match #') && a.displayName != 'Unknown';
+      final bReal = !b.displayName.startsWith('Match #') && b.displayName != 'Unknown';
+      if (aReal && !bReal) return -1;
+      if (!aReal && bReal) return 1;
+      return b.matchedAt.compareTo(a.matchedAt); // newest first within group
+    });
+    return enriched;
   }
 }
 

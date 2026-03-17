@@ -216,7 +216,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
         debugPrint('🔧 DevMode on desktop: skipping Firebase, navigating to verify-code');
         Navigator.pushNamed(
           context,
-          '${_routePrefix}/verify-code',
+          '$_routePrefix/verify-code',
           arguments: {
             'verificationId': 'dev-mode-desktop-fake-id',
             'phoneNumber': fullPhone,
@@ -245,7 +245,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
           setState(() => _isSending = false);
           Navigator.pushNamed(
             context,
-            '${_routePrefix}/verify-code',
+            '$_routePrefix/verify-code',
             arguments: {
               'verificationId': verificationId,
               'phoneNumber': fullPhone,
@@ -263,7 +263,7 @@ class _PhoneEntryScreenState extends State<PhoneEntryScreen> {
           if (idToken != null) {
             Navigator.pushNamed(
               context,
-              '${_routePrefix}/verify-code',
+              '$_routePrefix/verify-code',
               arguments: {
                 'autoVerified': true,
                 'firebaseIdToken': idToken,

@@ -301,6 +301,7 @@ class _SmsCodeScreenState extends State<SmsCodeScreen> {
         if (resp.statusCode == 200) {
           // Existing user with profile → go to home
           await appState.setOnboardingComplete();
+          if (!mounted) return;
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
           return;
         }

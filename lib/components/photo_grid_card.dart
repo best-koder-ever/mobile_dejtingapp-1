@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dejtingapp/theme/app_theme.dart';
 
@@ -12,7 +11,7 @@ class PhotoGridCard extends StatelessWidget {
   final Map<String, String>? imageHeaders;
 
   const PhotoGridCard({
-    Key? key,
+    super.key,
     this.photoUrl,
     this.isMainPhoto = false,
     this.isEditing = false,
@@ -20,7 +19,7 @@ class PhotoGridCard extends StatelessWidget {
     this.onDelete,
     this.isLoading = false,
     this.imageHeaders,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

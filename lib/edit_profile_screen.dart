@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dejtingapp/theme/app_theme.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,7 +22,7 @@ class EditProfileScreen extends StatefulWidget {
   });
 
   @override
-  _EditProfileScreenState createState() =>
+  State<EditProfileScreen> createState() =>
       _EditProfileScreenState();
 }
 
@@ -534,14 +533,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         });
         debugPrint('❌ Photo upload failed: $e');
       } finally {
-        if (!mounted) {
-          return;
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _uploadingIndex = null;
+          });
+          _loadPhotosFromPhotoService();
         }
-        setState(() {
-          _isLoading = false;
-          _uploadingIndex = null;
-        });
-        _loadPhotosFromPhotoService();
       }
     }
   }
@@ -607,10 +605,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         );
       }
     } finally {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -696,9 +695,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         _errorMessage = 'Failed to save profile: ${e.toString()}';
       });
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

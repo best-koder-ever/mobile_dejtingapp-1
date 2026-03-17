@@ -189,10 +189,10 @@ class _EnhancedMatchesScreenState extends State<EnhancedMatchesScreen>
             .map((s) => Match(
                   id: s.matchId,
                   userId1: currentUserId,
-                  userId2: s.matchedUserId,
+                  userId2: s.keycloakUserId ?? s.matchedUserId,
                   matchedAt: s.matchedAt,
                   otherUserProfile: UserProfile(
-                    userId: s.matchedUserId,
+                    userId: s.keycloakUserId ?? s.matchedUserId,
                     firstName: s.displayName,
                     lastName: '',
                     dateOfBirth: DateTime(2000, 1, 1),
@@ -286,38 +286,40 @@ class _EnhancedMatchesScreenState extends State<EnhancedMatchesScreen>
   }
 
   Widget _buildConnectionStatus() {
-    IconData statusIcon;
-
-    switch (_connectionStatus) {
-      case 'Connected':
-        statusIcon = Icons.wifi;
-        break;
-      case 'Connecting...':
-      case 'Reconnecting...':
-        statusIcon = Icons.wifi_off;
-        break;
-      default:
-        statusIcon = Icons.wifi_off;
+    // In dev mode, don't show noisy reconnecting status — just show a dot
+    if (_connectionStatus == 'Connected') {
+      return Container(
+        width: 8, height: 8,
+        decoration: const BoxDecoration(
+          color: Colors.green,
+          shape: BoxShape.circle,
+        ),
+      );
     }
 
+    // Disconnected / Reconnecting: small subtle indicator
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(statusIcon, size: 12, color: Colors.white),
+          Container(
+            width: 6, height: 6,
+            decoration: BoxDecoration(
+              color: _connectionStatus == 'Connecting...' || _connectionStatus == 'Reconnecting...'
+                  ? Colors.orange
+                  : Colors.red,
+              shape: BoxShape.circle,
+            ),
+          ),
           const SizedBox(width: 4),
           Text(
-            _connectionStatus,
-            style: const TextStyle(
-              fontSize: 10,
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
+            _connectionStatus == 'Reconnecting...' ? 'Offline' : _connectionStatus,
+            style: const TextStyle(fontSize: 9, color: Colors.white54),
           ),
         ],
       ),
@@ -517,7 +519,7 @@ class _EnhancedMatchesScreenState extends State<EnhancedMatchesScreen>
         itemBuilder: (context, index) {
           final conversation = _conversations[index];
           final match = _matches.firstWhere(
-            (m) => m.otherUserProfile?.userId == conversation.otherUserId,
+            (m) => m.userId2 == conversation.otherUserId,
             orElse: () => Match(
               id: '',
               userId1: '',

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -8,30 +9,37 @@ import '../config/environment.dart';
 import 'api_service.dart';
 import '../utils/jwt_utils.dart';
 
-/// Dev Auto-Login — uses Keycloak Admin API to issue tokens WITHOUT passwords.
+/// Dev Auto-Login — direct ROPC with known BotService password.
 ///
-/// Flow:
-/// 1. Authenticate as admin → get admin bearer token
-/// 2. Look up demo user by username → get userId
-/// 3. Use test-runner service account client_credentials → get token
-///    (with user impersonation if needed)
+/// The demo-user is provisioned by BotService with a known password
+/// (bot_pass_demo-user), so we just do a direct ROPC grant.
+/// No admin API needed.
 ///
-/// This replaces the old ROPC (password grant) approach. No hardcoded passwords.
+/// Wrapped with a 10-second timeout so it never blocks app startup.
 class DevAutoLogin {
   const DevAutoLogin._();
 
-  static const _demoUsername = 'demo-user';
+  static const _demoUsername = 'bot_demo-user@bot.local';
+  /// Password matches BotService's KeycloakBotProvisioner password scheme:
+  /// {BOT_PASSWORD_PREFIX}{personaId} = "bot_pass_demo-user"
+  static const _demoPassword = 'bot_pass_demo-user';
   static const _disableFlag = 'DEMO_AUTO_LOGIN_DISABLED';
 
-  /// Keycloak admin credentials (only used in dev, from docker-compose)
-  static const _adminUser = 'admin';
-  static const _adminPass = 'admin';
-
+  /// Public entry point — timeout-protected.
   static Future<void> ensureDemoSession() async {
-    if (!EnvironmentConfig.isDevelopment) {
-      return;
-    }
+    if (!EnvironmentConfig.isDevelopment) return;
 
+    try {
+      await _doLogin().timeout(const Duration(seconds: 10));
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Dev auto-login timed out or failed: $e');
+      }
+    }
+  }
+
+  /// Actual login logic.
+  static Future<void> _doLogin() async {
     final env = Platform.environment;
     if (env[_disableFlag] == '1' ||
         env[_disableFlag]?.toLowerCase() == 'true') {
@@ -45,38 +53,21 @@ class DevAutoLogin {
     await appState.initialize();
 
     if (appState.hasValidAuthSession()) {
+      if (kDebugMode) debugPrint('✅ Dev auto-login: existing session still valid');
       return;
     }
 
     try {
-      // 1. Get admin token from Keycloak master realm
-      final adminToken = await _getAdminToken();
-      if (adminToken == null) {
-        if (kDebugMode) {
-          debugPrint('⚠️ Dev auto-login: Could not get admin token');
-        }
-        return;
-      }
+      if (kDebugMode) debugPrint('🔐 Dev auto-login: ROPC for $_demoUsername...');
 
-      // 2. Find demo user by username
-      final userId = await _findUserByUsername(adminToken, _demoUsername);
-      if (userId == null) {
-        if (kDebugMode) {
-          debugPrint('⚠️ Dev auto-login: User "$_demoUsername" not found');
-        }
-        return;
-      }
-
-      // 3. Use test-runner client_credentials + token exchange to impersonate user
-      final tokens = await _getTokensForUser(adminToken, userId);
+      // Direct ROPC — demo-user password is set by BotService
+      final tokens = await _getTokensViaROPC();
       if (tokens == null) {
-        if (kDebugMode) {
-          debugPrint('⚠️ Dev auto-login: Could not get tokens for user');
-        }
+        if (kDebugMode) debugPrint('⚠️ Dev auto-login: ROPC failed (is BotService running?)');
         return;
       }
 
-      // 4. Build a session from the tokens
+      // Build session
       final accessToken = tokens['access_token'] as String;
       final refreshToken = tokens['refresh_token'] as String?;
       final idToken = tokens['id_token'] as String?;
@@ -85,27 +76,31 @@ class DevAutoLogin {
       final tokenPayload = JwtUtils.decodePayload(accessToken) ?? {};
       final userInfo = await AuthService.fetchUserInfo(accessToken) ?? {};
 
+      final userId = (tokenPayload['sub'] ?? '').toString();
       final profile = <String, dynamic>{
-        'sub': tokenPayload['sub'] ?? userId,
+        'sub': userId,
         'preferred_username': tokenPayload['preferred_username'] ?? _demoUsername,
         'email': tokenPayload['email'] ?? userInfo['email'],
         'name': tokenPayload['name'] ?? userInfo['name'],
       };
 
       await appState.login(
-        userId: (profile['sub'] ?? userId).toString(),
+        userId: userId,
         accessToken: accessToken,
-        accessTokenExpiresAt:
-            DateTime.now().toUtc().add(Duration(seconds: expiresIn)),
+        accessTokenExpiresAt: DateTime.now().toUtc().add(Duration(seconds: expiresIn)),
         refreshToken: refreshToken ?? '',
-        refreshTokenExpiresAt:
-            DateTime.now().toUtc().add(const Duration(minutes: 30)),
+        refreshTokenExpiresAt: DateTime.now().toUtc().add(const Duration(minutes: 30)),
         idToken: idToken,
         profile: profile,
       );
 
+      // Demo user is already onboarded on the backend
+      await appState.setOnboardingComplete();
+
+      // Eagerly resolve the integer profile ID so matchmaking works
+      final profileId = await appState.getOrResolveProfileId();
       if (kDebugMode) {
-        debugPrint('✅ Dev auto-login: Logged in as $_demoUsername (Admin API)');
+        debugPrint('✅ Dev auto-login: Logged in as $_demoUsername ($userId), profileId=$profileId');
       }
     } catch (e, stack) {
       if (kDebugMode) {
@@ -116,187 +111,29 @@ class DevAutoLogin {
     }
   }
 
-  /// Get admin bearer token from Keycloak master realm
-  static Future<String?> _getAdminToken() async {
-    final settings = EnvironmentConfig.settings;
-    // Admin token comes from the master realm
-    final keycloakBase = settings.keycloakIssuer
-        .replaceAll('/realms/DatingApp', '');
-    final url = Uri.parse('$keycloakBase/realms/master/protocol/openid-connect/token');
-
-    try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: {
-          'grant_type': 'password',
-          'client_id': 'admin-cli',
-          'username': _adminUser,
-          'password': _adminPass,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body) as Map<String, dynamic>;
-        return data['access_token'] as String?;
-      }
-      if (kDebugMode) {
-        debugPrint('Admin token request failed: ${response.statusCode} ${response.body}');
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Admin token request error: $e');
-      }
-    }
-    return null;
-  }
-
-  /// Find user ID by username using Admin REST API
-  static Future<String?> _findUserByUsername(
-      String adminToken, String username) async {
-    final settings = EnvironmentConfig.settings;
-    final keycloakBase = settings.keycloakIssuer
-        .replaceAll('/realms/DatingApp', '');
-    final url = Uri.parse(
-        '$keycloakBase/admin/realms/DatingApp/users?username=$username&exact=true');
-
-    try {
-      final response = await http.get(
-        url,
-        headers: {'Authorization': 'Bearer $adminToken'},
-      );
-
-      if (response.statusCode == 200) {
-        final users = json.decode(response.body) as List;
-        if (users.isNotEmpty) {
-          return (users.first as Map<String, dynamic>)['id'] as String?;
-        }
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('User lookup error: $e');
-      }
-    }
-    return null;
-  }
-
-  /// Get tokens for a specific user using test-runner service account
-  /// with token exchange (impersonation).
-  static Future<Map<String, dynamic>?> _getTokensForUser(
-      String adminToken, String userId) async {
+  /// Get tokens using direct grant (ROPC) with the BotService-provisioned password.
+  static Future<Map<String, dynamic>?> _getTokensViaROPC() async {
     final settings = EnvironmentConfig.settings;
     final tokenUrl = settings.keycloakTokenEndpoint;
 
-    try {
-      // First get a service account token for test-runner
-      final saResponse = await http.post(
-        tokenUrl,
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: {
-          'grant_type': 'client_credentials',
-          'client_id': 'test-runner',
-          'client_secret': 'CHANGE_ME_TEST_RUNNER',
-        },
-      );
+    final tokenResp = await http.post(
+      tokenUrl,
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {
+        'grant_type': 'password',
+        'client_id': settings.keycloakClientId,
+        'username': _demoUsername,
+        'password': _demoPassword,
+        'scope': 'openid profile email',
+      },
+    );
 
-      if (saResponse.statusCode != 200) {
-        if (kDebugMode) {
-          debugPrint('test-runner client_credentials failed: ${saResponse.statusCode}');
-        }
-        // Fallback: use direct grant via admin-created temporary password
-        return _fallbackDirectGrant(adminToken, userId);
-      }
-
-      final saData = json.decode(saResponse.body) as Map<String, dynamic>;
-      final saToken = saData['access_token'] as String;
-
-      // Token exchange: impersonate the target user
-      final exchangeResponse = await http.post(
-        tokenUrl,
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: {
-          'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
-          'client_id': 'test-runner',
-          'client_secret': 'CHANGE_ME_TEST_RUNNER',
-          'subject_token': saToken,
-          'requested_token_type': 'urn:ietf:params:oauth:token-type:access_token',
-          'requested_subject': userId,
-        },
-      );
-
-      if (exchangeResponse.statusCode == 200) {
-        return json.decode(exchangeResponse.body) as Map<String, dynamic>;
-      }
-
-      if (kDebugMode) {
-        debugPrint('Token exchange failed: ${exchangeResponse.statusCode}');
-      }
-
-      // Fallback if token exchange is not configured
-      return _fallbackDirectGrant(adminToken, userId);
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Token exchange error: $e');
-      }
-      return null;
+    if (tokenResp.statusCode == 200) {
+      return json.decode(tokenResp.body) as Map<String, dynamic>;
     }
-  }
 
-  /// Fallback: set a temporary password via Admin API, do ROPC, then remove it.
-  /// Used only if token exchange isn't configured yet.
-  static Future<Map<String, dynamic>?> _fallbackDirectGrant(
-      String adminToken, String userId) async {
-    final settings = EnvironmentConfig.settings;
-    final keycloakBase = settings.keycloakIssuer
-        .replaceAll('/realms/DatingApp', '');
-
-
-    try {
-      // Set temporary password
-      final resetUrl = Uri.parse(
-          '$keycloakBase/admin/realms/DatingApp/users/$userId/reset-password');
-
-      final resetResp = await http.put(
-        resetUrl,
-        headers: {
-          'Authorization': 'Bearer $adminToken',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode({
-          'type': 'password',
-          'value': 'DevTempPass123!',
-          'temporary': false,
-        }),
-      );
-
-      if (resetResp.statusCode != 204) {
-        if (kDebugMode) {
-          debugPrint('Password reset failed: ${resetResp.statusCode}');
-        }
-        return null;
-      }
-
-      // ROPC with temporary password
-      final tokenUrl = settings.keycloakTokenEndpoint;
-      final tokenResp = await http.post(
-        tokenUrl,
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: {
-          'grant_type': 'password',
-          'client_id': 'test-runner',
-          'client_secret': 'CHANGE_ME_TEST_RUNNER',
-          'username': _demoUsername,
-          'password': 'DevTempPass123!',
-        },
-      );
-
-      if (tokenResp.statusCode == 200) {
-        return json.decode(tokenResp.body) as Map<String, dynamic>;
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Fallback direct grant error: $e');
-      }
+    if (kDebugMode) {
+      debugPrint('ROPC failed: ${tokenResp.statusCode} ${tokenResp.body}');
     }
     return null;
   }

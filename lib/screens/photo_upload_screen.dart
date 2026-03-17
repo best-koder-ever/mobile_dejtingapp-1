@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
@@ -18,11 +17,11 @@ class PhotoUploadScreen extends StatefulWidget {
   final Function(bool isComplete) onPhotoRequirementMet;
 
   const PhotoUploadScreen({
-    Key? key,
+    super.key,
     this.authToken,
     this.userId,
     required this.onPhotoRequirementMet,
-  }) : super(key: key);
+  });
 
   @override
   State<PhotoUploadScreen> createState() => _PhotoUploadScreenState();
@@ -734,7 +733,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -785,7 +784,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
               // Loading overlay
               if (isLoading)
                 Container(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha: 0.5),
                   child: const Center(
                     child: CircularProgressIndicator(color: Colors.white),
                   ),
@@ -927,7 +926,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withValues(alpha: 0.7),
                   ],
                 ),
               ),
@@ -967,7 +966,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.orange.withOpacity(0.7),
+                    Colors.orange.withValues(alpha: 0.7),
                   ],
                 ),
               ),
