@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
@@ -480,6 +481,60 @@ class MessagingService {
     ));
 
     return optimistic;
+  }
+
+  // =========================================================================
+  // Voice Message Upload + Send
+  // =========================================================================
+
+  /// Upload voice message audio to photo-service, then send as audio message.
+  /// Returns the optimistic local Message, or null on upload failure.
+  Future<Message?> sendVoiceMessage(
+    String receiverId,
+    String audioFilePath, {
+    required double durationSeconds,
+  }) async {
+    if (_currentUserId == null || _authToken == null) return null;
+
+    // Upload to photo-service
+    final audioUrl = await uploadVoiceMessage(audioFilePath, durationSeconds: durationSeconds);
+    if (audioUrl == null) return null;
+
+    // Send as audio message (URL is the content)
+    return sendMessage(
+      receiverId,
+      audioUrl,
+      type: MessageType.audio,
+    );
+  }
+
+  /// Upload audio file to photo-service voice-messages endpoint.
+  /// Returns the URL path on success, null on failure.
+  Future<String?> uploadVoiceMessage(
+    String audioFilePath, {
+    required double durationSeconds,
+  }) async {
+    if (_authToken == null) return null;
+
+    try {
+      final uri = Uri.parse('\$baseUrl/api/voice-messages');
+      final request = http.MultipartRequest('POST', uri)
+        ..headers['Authorization'] = 'Bearer \$_authToken'
+        ..fields['duration'] = durationSeconds.toStringAsFixed(1)
+        ..files.add(await http.MultipartFile.fromPath('audio', audioFilePath,
+            contentType: MediaType('audio', 'mp4')));
+
+      final response = await request.send().timeout(const Duration(seconds: 30));
+      if (response.statusCode == 201) {
+        final body = await response.stream.bytesToString();
+        final data = json.decode(body);
+        return data['url'] as String?;
+      }
+      if (kDebugMode) debugPrint('❌ Voice upload failed: \${response.statusCode}');
+    } catch (e) {
+      if (kDebugMode) debugPrint('❌ Voice upload error: \$e');
+    }
+    return null;
   }
 
   // =========================================================================

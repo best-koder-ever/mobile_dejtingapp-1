@@ -55,14 +55,51 @@ void main() {
       expect(find.byType(TextField), findsAtLeastNWidgets(1));
     });
 
-    testWidgets('shows send button', (tester) async {
+    testWidgets('empty input shows mic button instead of send', (tester) async {
       await tester.pumpWidget(
         buildCoreScreenTestApp(
           home: EnhancedChatScreen(match: _dummyMatch()),
         ),
       );
       await tester.pump(const Duration(milliseconds: 500));
+      // Mic button should be visible (via VoiceChatRecorder idle state)
+      expect(find.byIcon(Icons.mic), findsOneWidget);
+      // Send button should NOT be visible when text is empty
+      expect(find.byIcon(Icons.send), findsNothing);
+    });
+
+    testWidgets('typing text shows send button', (tester) async {
+      await tester.pumpWidget(
+        buildCoreScreenTestApp(
+          home: EnhancedChatScreen(match: _dummyMatch()),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 500));
+      // Type text into the field
+      await tester.enterText(find.byType(TextField).first, 'Hello');
+      await tester.pump();
+      // Now send button should appear
       expect(find.byIcon(Icons.send), findsOneWidget);
+      // Mic should be gone
+      expect(find.byIcon(Icons.mic), findsNothing);
+    });
+
+    testWidgets('clearing text shows mic button again', (tester) async {
+      await tester.pumpWidget(
+        buildCoreScreenTestApp(
+          home: EnhancedChatScreen(match: _dummyMatch()),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 500));
+      // Type and then clear
+      await tester.enterText(find.byType(TextField).first, 'Hello');
+      await tester.pump();
+      expect(find.byIcon(Icons.send), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField).first, '');
+      await tester.pump();
+      expect(find.byIcon(Icons.mic), findsOneWidget);
+      expect(find.byIcon(Icons.send), findsNothing);
     });
   });
 }

@@ -399,6 +399,7 @@ class Message {
   final MessageType type;
   final DateTime? readAt;
   final String? moderationFlag;
+  final double? audioDurationSeconds;
 
   Message({
     required this.id,
@@ -410,6 +411,7 @@ class Message {
     this.type = MessageType.text,
     this.readAt,
     this.moderationFlag,
+    this.audioDurationSeconds,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
@@ -424,6 +426,7 @@ class Message {
       type: MessageType.values[json['type'] ?? 0],
       readAt: json['readAt'] != null ? DateTime.tryParse(json['readAt']) : null,
       moderationFlag: json['moderationFlag'] as String?,
+      audioDurationSeconds: (json['audioDurationSeconds'] as num?)?.toDouble(),
     );
   }
 
@@ -438,6 +441,7 @@ class Message {
       'type': type.index,
       if (readAt != null) 'readAt': readAt!.toIso8601String(),
       if (moderationFlag != null) 'moderationFlag': moderationFlag,
+      if (audioDurationSeconds != null) 'audioDurationSeconds': audioDurationSeconds,
     };
   }
 
@@ -451,6 +455,7 @@ class Message {
     MessageType? type,
     DateTime? readAt,
     String? moderationFlag,
+    double? audioDurationSeconds,
   }) {
     return Message(
       id: id ?? this.id,
@@ -462,6 +467,7 @@ class Message {
       type: type ?? this.type,
       readAt: readAt ?? this.readAt,
       moderationFlag: moderationFlag ?? this.moderationFlag,
+      audioDurationSeconds: audioDurationSeconds ?? this.audioDurationSeconds,
     );
   }
 }
@@ -470,6 +476,7 @@ enum MessageType {
   text,
   image,
   emoji,
+  audio,
 }
 
 /// A candidate profile returned by the matchmaking service for swiping

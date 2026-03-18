@@ -6,6 +6,8 @@ import '../models.dart';
 import '../services/messaging_service.dart';
 import '../utils/profanity_filter.dart';
 import 'profile_detail_screen.dart';
+import '../widgets/voice/voice_message_bubble.dart';
+import '../widgets/voice/voice_chat_recorder.dart';
 
 class EnhancedChatScreen extends StatefulWidget {
   final Match match;
@@ -37,6 +39,8 @@ class _EnhancedChatScreenState extends State<EnhancedChatScreen>
   Timer? _typingDebounce;
   Timer? _typingTimeout;
   bool _iAmTyping = false;
+  bool _isRecordingVoice = false;
+  bool _hasText = false;
 
   @override
   void initState() {
@@ -130,6 +134,9 @@ class _EnhancedChatScreenState extends State<EnhancedChatScreen>
 
   void _onTextChanged() {
     final hasText = _messageController.text.trim().isNotEmpty;
+    if (hasText != _hasText) {
+      setState(() => _hasText = hasText);
+    }
     if (hasText && !_iAmTyping) {
       _iAmTyping = true;
       _sendTypingState(true);
@@ -406,13 +413,20 @@ class _EnhancedChatScreenState extends State<EnhancedChatScreen>
                     color: isMe ? AppTheme.primaryColor : AppTheme.surfaceElevated,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(
-                    message.content,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
+                  child: message.type == MessageType.audio
+                      ? VoiceMessageBubble(
+                          audioUrl: message.content,
+                          durationSeconds: message.audioDurationSeconds ?? 0,
+                          timestamp: message.timestamp,
+                          isSender: isMe,
+                        )
+                      : Text(
+                          message.content,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
                 ),
                 if (message.moderationFlag != null) ...[
                   const SizedBox(height: 4),
@@ -741,26 +755,43 @@ class _EnhancedChatScreenState extends State<EnhancedChatScreen>
                     ),
                   ),
                   const SizedBox(width: 12),
-                  FloatingActionButton.small(
-                    onPressed: _isSending ? null : _sendMessage,
-                    backgroundColor: _isSending ? AppTheme.surfaceElevated : AppTheme.primaryColor,
-                    child: _isSending
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : const Icon(Icons.send, color: Colors.white),
-                  ),
+                  if (_hasText || _isSending)
+                    FloatingActionButton.small(
+                      onPressed: _isSending ? null : _sendMessage,
+                      backgroundColor: _isSending ? AppTheme.surfaceElevated : AppTheme.primaryColor,
+                      child: _isSending
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Icon(Icons.send, color: Colors.white),
+                    )
+                  else
+                    VoiceChatRecorder(
+                      onSend: _handleVoiceSend,
+                      onCancel: () => setState(() => _isRecordingVoice = false),
+                    ),
                 ],
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _handleVoiceSend(String filePath, double durationSeconds) async {
+    final otherUserId = widget.match.otherUserProfile?.userId;
+    if (otherUserId == null) return;
+    setState(() => _isRecordingVoice = false);
+    await _messagingService.sendVoiceMessage(
+      otherUserId,
+      filePath,
+      durationSeconds: durationSeconds,
     );
   }
 
