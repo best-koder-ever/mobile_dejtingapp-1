@@ -10,3 +10,7 @@ __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
+
+# Override the root-level *.py exclusion — Visual QA Python scripts are intentional
+!*.py
+!tests/*.py
