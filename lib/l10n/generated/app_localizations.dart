@@ -2545,6 +2545,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Phone'**
   String get consentProviderPhone;
+
+  /// Title for the Help & Support screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get helpScreenTitle;
 }
 
 class _AppLocalizationsDelegate

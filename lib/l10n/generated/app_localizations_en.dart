@@ -1332,4 +1332,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get consentProviderPhone => 'Phone';
+
+  @override
+  String get helpScreenTitle => 'Help & Support';
 }

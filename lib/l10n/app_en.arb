@@ -1657,5 +1657,7 @@
   "consentTerms": "Terms",
   "@consentTerms": { "description": "Footer terms link on the consent screen" },
   "consentProviderPhone": "Phone",
-  "@consentProviderPhone": { "description": "Provider name for phone authentication on the consent screen" }
+  "@consentProviderPhone": { "description": "Provider name for phone authentication on the consent screen" },
+  "helpScreenTitle": "Help & Support",
+  "@helpScreenTitle": { "description": "Title for the Help & Support screen" }
 }
