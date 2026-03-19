@@ -550,5 +550,7 @@
   "consentTerms": "Villkor",
   "@consentTerms": { "description": "Villkorslänk i sidfoten på godkännandeskärmen" },
   "consentProviderPhone": "Telefon",
-  "@consentProviderPhone": { "description": "Leverantörsnamn för telefonverifiering på godkännandeskärmen" }
+  "@consentProviderPhone": { "description": "Leverantörsnamn för telefonverifiering på godkännandeskärmen" },
+  "locationSettings": "Platsinställningar",
+  "@locationSettings": { "description": "Titel för platsinställningsskärmen" }
 }

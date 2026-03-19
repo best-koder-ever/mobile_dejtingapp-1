@@ -2545,6 +2545,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Phone'**
   String get consentProviderPhone;
+
+  /// Title for the location settings screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Settings'**
+  String get locationSettings;
 }
 
 class _AppLocalizationsDelegate

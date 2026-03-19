@@ -1337,4 +1337,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get consentProviderPhone => 'Telefon';
+
+  @override
+  String get locationSettings => 'Platsinställningar';
 }
