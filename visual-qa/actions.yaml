@@ -97,3 +97,12 @@ account_consent:
 discover:
   actions:
     - {type: screenshot, name: "discover-empty"}
+
+matches_new:
+  actions:
+    - {type: screenshot, name: "matches-new"}
+    - {type: tap, target: "Messages"}
+
+matches_messages:
+  actions:
+    - {type: screenshot, name: "matches-messages"}
