@@ -103,3 +103,12 @@ discover_explore:
   actions:
     - {type: screenshot, name: "discover-filter-open"}
     - {type: tap, target: "Done"}
+
+matches_new:
+  actions:
+    - {type: screenshot, name: "matches-new"}
+    - {type: tap, target: "Messages"}
+
+matches_messages:
+  actions:
+    - {type: screenshot, name: "matches-messages"}
