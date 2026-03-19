@@ -96,7 +96,22 @@ account_consent:
 
 discover:
   actions:
-    - {type: screenshot, name: "discover-empty"}
+    - {type: screenshot, name: "discover-main"}
+    - {type: tap, target: "Discovery Filters"}
+
+discover_explore:
+  actions:
+    - {type: screenshot, name: "discover-filter-open"}
+    - {type: tap, target: "Done"}
+
+matches_new:
+  actions:
+    - {type: screenshot, name: "matches-new"}
+    - {type: tap, target: "Messages"}
+
+matches_messages:
+  actions:
+    - {type: screenshot, name: "matches-messages"}
 
 chat_conversation:
   actions:

@@ -123,8 +123,30 @@ SCREEN_SIGNATURES: dict[str, dict] = {
         "required": ["Discover", "Skip", "Like"],
         "category": "main",
     },
+    "discover_explore": {
+        # Tokens unique to the discovery-settings bottom sheet being open.
+        # Four required tokens ensure this signature wins the tie-breaker
+        # over "discover" (3 tokens) when both match at 1.0 confidence.
+        "required": [
+            "sheet:discovery-settings",
+            "Discovery Settings",
+            "Done",
+            "Show me on DejTing",
+        ],
+        "category": "main",
+    },
     "matches": {
         "required": ["Matches", "Messages"],
+        "category": "main",
+    },
+    "matches_new": {
+        # New Matches tab active with empty state (no real matches yet)
+        "required": ["New Matches", "No matches yet", "Keep swiping"],
+        "category": "main",
+    },
+    "matches_messages": {
+        # Messages tab active with empty state (no conversations yet)
+        "required": ["Messages", "No conversations yet", "Start chatting"],
         "category": "main",
     },
     "chat": {
