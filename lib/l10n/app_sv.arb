@@ -550,5 +550,16 @@
   "consentTerms": "Villkor",
   "@consentTerms": { "description": "Villkorslänk i sidfoten på godkännandeskärmen" },
   "consentProviderPhone": "Telefon",
-  "@consentProviderPhone": { "description": "Leverantörsnamn för telefonverifiering på godkännandeskärmen" }
+  "@consentProviderPhone": { "description": "Leverantörsnamn för telefonverifiering på godkännandeskärmen" },
+  "hearVoice": "Hör {name}s röst",
+  "@hearVoice": {
+    "description": "Etikett på röstpromptkortet som visar vems röstklipp det är",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "likeOnly": "Gilla bara",
+  "@likeOnly": { "description": "Knapptext för att gilla en profil utan att skicka en kommentar" }
 }

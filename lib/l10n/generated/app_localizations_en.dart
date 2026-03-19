@@ -1332,4 +1332,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get consentProviderPhone => 'Phone';
+
+  @override
+  String hearVoice(String name) => 'Hear ${name}\'s voice';
+
+  @override
+  String get likeOnly => 'Like only';
 }
