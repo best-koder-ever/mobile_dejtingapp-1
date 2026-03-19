@@ -2024,6 +2024,18 @@ abstract class AppLocalizations {
   /// **'Control your privacy settings'**
   String get privacySettings;
 
+  /// Privacy Settings screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Settings'**
+  String get privacySettingsTitle;
+
+  /// Privacy settings placeholder body text
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy settings coming soon'**
+  String get privacySettingsComingSoon;
+
   /// Phone number input hint
   ///
   /// In en, this message translates to:
@@ -2551,6 +2563,33 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Help & Support'**
   String get helpScreenTitle;
+  /// Title for the location settings screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Settings'**
+  String get locationSettings;
+  /// Label on the voice prompt card showing whose voice clip it is
+  ///
+  /// In en, this message translates to:
+  /// **'Hear {name}\'s voice'**
+  String hearVoice(String name);
+
+  /// Button label to like a profile without sending a comment
+  ///
+  /// In en, this message translates to:
+  /// **'Like only'**
+  String get likeOnly;
+  /// Subtitle showing how many contacts are blocked
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 contact blocked.} other{{count} contacts blocked.}}'**
+  String blockedCount(int count);
+
+  /// Subtitle for the voice prompt feature card on the profile hub screen
+  ///
+  /// In en, this message translates to:
+  /// **'Record a voice intro for your profile'**
+  String get voicePromptSubtitle;
 }
 
 class _AppLocalizationsDelegate

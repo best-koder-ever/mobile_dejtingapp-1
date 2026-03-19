@@ -1052,6 +1052,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacySettings => 'Control your privacy settings';
 
   @override
+  String get privacySettingsTitle => 'Privacy Settings';
+
+  @override
+  String get privacySettingsComingSoon => 'Privacy settings coming soon';
+
+  @override
   String get onboardingPhoneHint => 'Enter your phone number';
 
   @override
@@ -1335,4 +1341,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpScreenTitle => 'Help & Support';
+  String get locationSettings => 'Location Settings';
+  String hearVoice(String name) => 'Hear ${name}\'s voice';
+
+  @override
+  String get likeOnly => 'Like only';
+  String blockedCount(int count) {
+    return intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      one: '1 contact blocked.',
+      other: '$count contacts blocked.',
+    );
+  }
+
+  @override
+  String get voicePromptSubtitle => 'Record a voice intro for your profile';
 }
