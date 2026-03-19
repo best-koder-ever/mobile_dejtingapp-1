@@ -1668,5 +1668,14 @@
     }
   },
   "likeOnly": "Like only",
-  "@likeOnly": { "description": "Button label to like a profile without sending a comment" }
+  "@likeOnly": { "description": "Button label to like a profile without sending a comment" },
+  "blockedCount": "{count, plural, =1{1 contact blocked.} other{{count} contacts blocked.}}",
+  "@blockedCount": {
+    "description": "Subtitle showing how many contacts are blocked",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "voicePromptSubtitle": "Record a voice intro for your profile",
+  "@voicePromptSubtitle": { "description": "Subtitle for the voice prompt feature card on the profile hub screen" }
 }

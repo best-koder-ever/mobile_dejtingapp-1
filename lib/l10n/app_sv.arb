@@ -561,5 +561,14 @@
     }
   },
   "likeOnly": "Gilla bara",
-  "@likeOnly": { "description": "Knapptext för att gilla en profil utan att skicka en kommentar" }
+  "@likeOnly": { "description": "Knapptext för att gilla en profil utan att skicka en kommentar" },
+  "blockedCount": "{count, plural, =1{1 kontakt blockerad.} other{{count} kontakter blockerade.}}",
+  "@blockedCount": {
+    "description": "Undertext som visar hur många kontakter som är blockerade",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "voicePromptSubtitle": "Spela in en röstintro till din profil",
+  "@voicePromptSubtitle": { "description": "Undertext för röstprompt-funktionskortet på profilhubskärmen" }
 }

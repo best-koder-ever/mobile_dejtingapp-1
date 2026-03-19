@@ -1338,4 +1338,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get likeOnly => 'Like only';
+  String blockedCount(int count) {
+    return intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      one: '1 contact blocked.',
+      other: '$count contacts blocked.',
+    );
+  }
+
+  @override
+  String get voicePromptSubtitle => 'Record a voice intro for your profile';
 }
