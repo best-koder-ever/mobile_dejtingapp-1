@@ -1380,6 +1380,14 @@
   "@privacySettings": {
     "description": "Privacy settings subtitle"
   },
+  "privacySettingsTitle": "Privacy Settings",
+  "@privacySettingsTitle": {
+    "description": "Privacy Settings screen title"
+  },
+  "privacySettingsComingSoon": "Privacy settings coming soon",
+  "@privacySettingsComingSoon": {
+    "description": "Privacy settings placeholder body text"
+  },
   "onboardingPhoneHint": "Enter your phone number",
   "@onboardingPhoneHint": {
     "description": "Phone number input hint"
@@ -1659,5 +1667,25 @@
   "consentProviderPhone": "Phone",
   "@consentProviderPhone": { "description": "Provider name for phone authentication on the consent screen" },
   "locationSettings": "Location Settings",
-  "@locationSettings": { "description": "Title for the location settings screen" }
+  "@locationSettings": { "description": "Title for the location settings screen" },
+  "hearVoice": "Hear {name}'s voice",
+  "@hearVoice": {
+    "description": "Label on the voice prompt card showing whose voice clip it is",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "likeOnly": "Like only",
+  "@likeOnly": { "description": "Button label to like a profile without sending a comment" },
+  "blockedCount": "{count, plural, =1{1 contact blocked.} other{{count} contacts blocked.}}",
+  "@blockedCount": {
+    "description": "Subtitle showing how many contacts are blocked",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "voicePromptSubtitle": "Record a voice intro for your profile",
+  "@voicePromptSubtitle": { "description": "Subtitle for the voice prompt feature card on the profile hub screen" }
 }

@@ -321,6 +321,8 @@
   "aboutApp": "Om DatingApp",
   "accountSection": "Konto",
   "privacySettings": "Hantera dina integritetsinställningar",
+  "privacySettingsTitle": "Sekretessinställningar",
+  "privacySettingsComingSoon": "Sekretessinställningar kommer snart",
   "onboardingPhoneHint": "Ange ditt telefonnummer",
   "onboardingVerifyCode": "Verifiera kod",
   "onboardingVerifying": "Verifierar...",
@@ -552,5 +554,25 @@
   "consentProviderPhone": "Telefon",
   "@consentProviderPhone": { "description": "Leverantörsnamn för telefonverifiering på godkännandeskärmen" },
   "locationSettings": "Platsinställningar",
-  "@locationSettings": { "description": "Titel för platsinställningsskärmen" }
+  "@locationSettings": { "description": "Titel för platsinställningsskärmen" },
+  "hearVoice": "Hör {name}s röst",
+  "@hearVoice": {
+    "description": "Etikett på röstpromptkortet som visar vems röstklipp det är",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "likeOnly": "Gilla bara",
+  "@likeOnly": { "description": "Knapptext för att gilla en profil utan att skicka en kommentar" },
+  "blockedCount": "{count, plural, =1{1 kontakt blockerad.} other{{count} kontakter blockerade.}}",
+  "@blockedCount": {
+    "description": "Undertext som visar hur många kontakter som är blockerade",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "voicePromptSubtitle": "Spela in en röstintro till din profil",
+  "@voicePromptSubtitle": { "description": "Undertext för röstprompt-funktionskortet på profilhubskärmen" }
 }

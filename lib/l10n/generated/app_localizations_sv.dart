@@ -1057,6 +1057,12 @@ class AppLocalizationsSv extends AppLocalizations {
   String get privacySettings => 'Hantera dina integritetsinställningar';
 
   @override
+  String get privacySettingsTitle => 'Sekretessinställningar';
+
+  @override
+  String get privacySettingsComingSoon => 'Sekretessinställningar kommer snart';
+
+  @override
   String get onboardingPhoneHint => 'Ange ditt telefonnummer';
 
   @override
@@ -1340,4 +1346,19 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get locationSettings => 'Platsinställningar';
+  String hearVoice(String name) => 'Hör ${name}s röst';
+
+  @override
+  String get likeOnly => 'Gilla bara';
+  String blockedCount(int count) {
+    return intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      one: '1 kontakt blockerad.',
+      other: '$count kontakter blockerade.',
+    );
+  }
+
+  @override
+  String get voicePromptSubtitle => 'Spela in en röstintro till din profil';
 }
