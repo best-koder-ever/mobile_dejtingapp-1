@@ -97,3 +97,10 @@ account_consent:
 discover:
   actions:
     - {type: screenshot, name: "discover-empty"}
+
+chat_conversation:
+  actions:
+    - {type: screenshot, name: "chat-conversation"}
+    - {type: tap, target: "Type a message..."}
+    - {type: type, value: "Hello!"}
+    - {type: screenshot, name: "chat-input-active"}
