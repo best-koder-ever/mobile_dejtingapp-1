@@ -112,3 +112,10 @@ matches_new:
 matches_messages:
   actions:
     - {type: screenshot, name: "matches-messages"}
+
+chat_conversation:
+  actions:
+    - {type: screenshot, name: "chat-conversation"}
+    - {type: tap, target: "Type a message..."}
+    - {type: type, value: "Hello!"}
+    - {type: screenshot, name: "chat-input-active"}
