@@ -238,6 +238,28 @@ class TestFixtureDiscover(unittest.TestCase):
         self.assertAlmostEqual(result.confidence, 1.0)
 
 
+class TestFixtureDiscoverExplore(unittest.TestCase):
+    def test_detects_discover_explore(self):
+        result = detect_screen(_load("discover_explore.xml"))
+        self.assertIsNotNone(result)
+        self.assertEqual(result.screen, "discover_explore")
+        self.assertEqual(result.category, "main")
+        self.assertAlmostEqual(result.confidence, 1.0)
+
+    def test_discover_explore_beats_discover_when_sheet_open(self):
+        """discover_explore must win over discover when the sheet is visible."""
+        result = detect_screen(_load("discover_explore.xml"))
+        self.assertIsNotNone(result)
+        self.assertNotEqual(result.screen, "discover")
+        self.assertEqual(result.screen, "discover_explore")
+
+    def test_discover_still_detected_without_sheet(self):
+        """Plain discover fixture must not be misidentified as discover_explore."""
+        result = detect_screen(_load("discover.xml"))
+        self.assertIsNotNone(result)
+        self.assertEqual(result.screen, "discover")
+
+
 class TestFixtureMatches(unittest.TestCase):
     def test_detects_matches(self):
         result = detect_screen(_load("matches.xml"))
@@ -247,11 +269,38 @@ class TestFixtureMatches(unittest.TestCase):
         self.assertAlmostEqual(result.confidence, 1.0)
 
 
+class TestFixtureMatchesNew(unittest.TestCase):
+    def test_detects_matches_new(self):
+        result = detect_screen(_load("matches_new.xml"))
+        self.assertIsNotNone(result)
+        self.assertEqual(result.screen, "matches_new")
+        self.assertEqual(result.category, "main")
+        self.assertAlmostEqual(result.confidence, 1.0)
+
+
+class TestFixtureMatchesMessages(unittest.TestCase):
+    def test_detects_matches_messages(self):
+        result = detect_screen(_load("matches_messages.xml"))
+        self.assertIsNotNone(result)
+        self.assertEqual(result.screen, "matches_messages")
+        self.assertEqual(result.category, "main")
+        self.assertAlmostEqual(result.confidence, 1.0)
+
+
 class TestFixtureChat(unittest.TestCase):
     def test_detects_chat(self):
         result = detect_screen(_load("chat.xml"))
         self.assertIsNotNone(result)
         self.assertEqual(result.screen, "chat")
+        self.assertEqual(result.category, "main")
+        self.assertAlmostEqual(result.confidence, 1.0)
+
+
+class TestFixtureChatConversation(unittest.TestCase):
+    def test_detects_chat_conversation(self):
+        result = detect_screen(_load("chat_conversation.xml"))
+        self.assertIsNotNone(result)
+        self.assertEqual(result.screen, "chat_conversation")
         self.assertEqual(result.category, "main")
         self.assertAlmostEqual(result.confidence, 1.0)
 
@@ -408,8 +457,8 @@ class TestScreenSignaturesDict(unittest.TestCase):
             with self.subTest(screen=name):
                 self.assertIn(spec["category"], self.VALID_CATEGORIES)
 
-    def test_at_least_22_screens(self):
-        self.assertGreaterEqual(len(SCREEN_SIGNATURES), 22)
+    def test_at_least_24_screens(self):
+        self.assertGreaterEqual(len(SCREEN_SIGNATURES), 24)
 
     def test_screen_names_are_lowercase_underscore(self):
         import re
